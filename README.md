@@ -1,13 +1,21 @@
-docker build -t mujoco-robotics .
+## Build Image
+
+docker build -t drone-swarm-mujoco .
+
+## Headless Mode
 
 docker run --rm -it --gpus all `
   -e MUJOCO_GL=egl `
-  -e PYOPENGL_PLATFORM=egl `
-  -e NVIDIA_DRIVER_CAPABILITIES=all `
-  mujoco-robotics python -c "import mujoco, gymnasium_robotics; print(mujoco.__version__)"
+  -v "${PWD}:/workspace" `
+  drone-swarm-mujoco `
+  python swarm_coverage.py --mode headless --algo voronoi --steps 1500
 
-python swarm_coverage.py --compare          # adaptive vs. static, saves coverage_result.png
-python swarm_coverage.py --gif swarm.gif    # animation
-python swarm_coverage.py --drones 8 --grid 80 --comm-range 15 --no-events
+## Visual Mode
 
-
+docker run --rm -it --gpus all `
+  -e MUJOCO_GL=glfw `
+  -e DISPLAY=:0 `
+  -v "\\wsl.localhost\Ubuntu\mnt\wslg\.X11-unix:/tmp/.X11-unix" `
+  -v "${PWD}:/workspace" `
+  drone-swarm-mujoco `
+  python swarm_coverage.py --mode visual --algo frontier

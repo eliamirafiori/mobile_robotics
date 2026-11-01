@@ -1,540 +1,432 @@
-#!/usr/bin/env python3
-"""
-Decentralised, failure-adaptive area coverage for a drone swarm (2-D grid simulator).
-
-There is NO central coordinator. Every drone runs the same on-board loop:
-
-  1. SENSE        sweep the cells under its (square) camera footprint and update its own
-                  belief map (UNKNOWN / COVERED / BLOCKED). No-fly cells are only learned
-                  when a drone gets close enough to see them.
-  2. COMMUNICATE  with drones inside radio range: merge belief maps (cell-wise max) and a
-                  "peer table" (last known position / capability / timestamp of each drone).
-                  Information therefore spreads by gossip across the swarm, multi-hop.
-  3. PARTITION    using only its own peer table, split the still-uncovered cells between the
-                  peers it believes are alive with a capability-weighted Voronoi partition
-                  (distance / sqrt(capability)). A peer whose timestamp is older than the
-                  heartbeat timeout is treated as lost, so its territory is automatically
-                  taken over by whoever is closest -- this is the adaptation mechanism.
-  4. ACT          inside its own territory, pick the viewpoint with the best
-                  information-gain / path-cost ratio (frontier-style utility), plan a path
-                  with BFS on its own belief map, and fly it.
-
-Events (failure, motor/sensor degradation, comm loss, new no-fly zone, reinforcement drone)
-are injected into the "world" only; drones find out through sensing and gossip.
-
-Usage:
-    python swarm_coverage.py                       # adaptive swarm, saves coverage_result.png
-    python swarm_coverage.py --compare             # adaptive vs. static partition baseline
-    python swarm_coverage.py --gif swarm.gif       # also write an animation
-    python swarm_coverage.py --no-events           # same mission, nothing goes wrong
-    python swarm_coverage.py --drones 8 --grid 80 --comm-range 15 --seed 3
-
-Requires: numpy, matplotlib
-"""
-from __future__ import annotations
-
 import argparse
-import dataclasses
-import math
-from collections import defaultdict, deque
-from dataclasses import dataclass
-
+import time
+from dataclasses import dataclass, field
+from typing import Callable, Dict, List
 import numpy as np
+import mujoco
 
-UNKNOWN, COVERED, BLOCKED = 0, 1, 2  # belief states; UNKNOWN == "still needs coverage"
-
-
-# --------------------------------------------------------------------------- config / events
-@dataclass
-class Config:
-    grid: int = 50                 # side of the square area, in cells
-    n_drones: int = 5
-    sensor_radius: int = 2         # camera footprint half-width (2 -> 5x5 cells)
-    speed: float = 1.0             # cells per step
-    comm_range: float = 25.0       # radio range, in cells
-    battery: float = 600.0         # flight range, in cells
-    heartbeat_timeout: int = 25    # steps without news before a peer is considered lost
-    replan_period: int = 6         # steps between forced re-planning (picks up gossip changes)
-    target_coverage: float = 0.99
-    max_steps: int = 1500
-    seed: int = 0
-    adaptive: bool = True          # False -> static partition computed once at launch
-    frame_every: int = 0           # >0 -> keep animation frames
+# =====================================================================
+# 1. DATA STRUCTURES & DECENTRALIZED STATE
+# =====================================================================
 
 
 @dataclass
-class Event:
-    t: int
-    kind: str            # FAIL | SLOW | SENSOR | COMM | NOFLY | JOIN
-    drone: int = -1
-    value: float = 0.0
-    rect: tuple = ()     # NOFLY: (row, col, height, width)
-    label: str = ""
+class DroneState:
+    id: int
+    pos: np.ndarray  # [x, y, z]
+    vel: np.ndarray  # [vx, vy, vz]
+    yaw: float  # Heading angle (rad)
+    active: bool = True  # False if crashed / battery depleted
+    fov_radius: float = 2.2  # Sensing footprint radius (m)
+    comm_radius: float = 8.0  # Decentralized neighbor discovery radius (m)
+    target: np.ndarray = field(default_factory=lambda: np.zeros(3))
 
 
-def default_events(cfg: Config) -> list[Event]:
-    n = cfg.grid
-    return [
-        Event(30, "FAIL", drone=1, label="drone 1 crashes"),
-        Event(50, "SLOW", drone=3, value=0.4, label="drone 3 motor degraded (40% speed)"),
-        Event(70, "SENSOR", drone=0, value=1, label="drone 0 camera degraded (3x3 footprint)"),
-        Event(90, "NOFLY", rect=(int(.30 * n), int(.35 * n), int(.15 * n), int(.25 * n)),
-              label="new no-fly zone"),
-        Event(110, "JOIN", label="reinforcement drone launched"),
-        Event(130, "COMM", drone=2, value=0.15, label="drone 2 radio degraded (15% range)"),
-    ]
+@dataclass
+class CoverageGrid:
+    """2D discretization of the arena floor for tracking coverage & uncertainty."""
 
+    size: float = 16.0  # Arena goes from -size/2 to +size/2
+    resolution: int = 40  # 40x40 grid cells
 
-@dataclass(frozen=True)
-class PeerInfo:
-    pos: tuple
-    weight: float
-    stamp: int
+    def __post_init__(self):
+        half = self.size / 2.0
+        coords = np.linspace(
+            -half + (half / self.resolution),
+            half - (half / self.resolution),
+            self.resolution,
+        )
+        gx, gy = np.meshgrid(coords, coords)
+        self.cell_centers = np.stack([gx.ravel(), gy.ravel()], axis=-1)  # (N_cells, 2)
+        # Importance / uncertainty weight: 1.0 = unvisited, decays toward 0.05 when covered
+        self.uncertainty = np.ones(len(self.cell_centers), dtype=np.float32)
+        self.visited = np.zeros(len(self.cell_centers), dtype=bool)
 
+    def update(
+        self,
+        drones: List[DroneState],
+        decay_rate: float = 0.15,
+        forget_rate: float = 0.0005,
+    ):
+        # Slight information decay over time (for persistent monitoring)
+        self.uncertainty = np.clip(self.uncertainty + forget_rate, 0.05, 1.0)
 
-# --------------------------------------------------------------------------- helpers
-def box_sum(mask: np.ndarray, r: int) -> np.ndarray:
-    """Sum of `mask` over the (2r+1)x(2r+1) window centred on every cell (integral image)."""
-    k = 2 * r + 1
-    H, W = mask.shape
-    P = np.pad(mask.astype(np.int32), r)
-    cs = np.zeros((P.shape[0] + 1, P.shape[1] + 1), np.int32)
-    cs[1:, 1:] = P.cumsum(0).cumsum(1)
-    return cs[k:k + H, k:k + W] - cs[0:H, k:k + W] - cs[k:k + H, 0:W] + cs[0:H, 0:W]
-
-
-# --------------------------------------------------------------------------- the drone "brain"
-class Drone:
-    def __init__(self, uid: int, pos: tuple, cfg: Config):
-        self.id = uid
-        self.pos = pos                                  # (row, col)
-        self.speed = cfg.speed
-        self.radius = cfg.sensor_radius
-        self.comm_range = cfg.comm_range
-        self.battery0 = self.battery = cfg.battery
-        self.alive = True
-        self.belief = np.zeros((cfg.grid, cfg.grid), np.int8)
-        self.peers: dict[int, PeerInfo] = {}
-        self.frozen: list = []                          # only used by the static baseline
-        self.target = None
-        self.path: deque = deque()
-        self.budget = 0.0
-        self.replan = True
-        self.last_plan = -10 ** 9
-        self.share = 0.0                                # my fraction of the remaining area
-        self.distance = 0.0
-        self.swept = np.zeros((cfg.grid, cfg.grid), bool)   # cells I have swept myself
+        for d in drones:
+            if not d.active:
+                continue
+            dists = np.linalg.norm(self.cell_centers - d.pos[:2], axis=1)
+            in_fov = dists <= d.fov_radius
+            self.visited[in_fov] = True
+            self.uncertainty[in_fov] = np.maximum(
+                0.05, self.uncertainty[in_fov] * (1.0 - decay_rate)
+            )
 
     @property
-    def weight(self) -> float:
-        """Capability: speed x swath width x remaining energy."""
-        return max(self.speed, 0.05) * (2 * self.radius + 1) * max(self.battery / self.battery0, 0.05)
-
-    # ---- peer table / heartbeat
-    def heartbeat(self, t: int):
-        self.peers[self.id] = PeerInfo(self.pos, self.weight, t)
-
-    def anchors(self, world: "World") -> list:
-        if not world.cfg.adaptive:
-            return self.frozen
-        out = []
-        for pid, info in self.peers.items():
-            if pid == self.id:
-                out.append((pid, self.pos, self.weight))
-            elif world.t - info.stamp <= world.cfg.heartbeat_timeout:
-                out.append((pid, info.pos, info.weight))
-        return out
-
-    # ---- planning
-    def _bfs(self):
-        H, W = self.belief.shape
-        W2 = W + 2
-        blk = np.ones((H + 2, W2), bool)
-        blk[1:-1, 1:-1] = self.belief == BLOCKED
-        blk = blk.ravel().tolist()
-        dist = [-1] * len(blk)
-        parent = [-1] * len(blk)
-        s = (self.pos[0] + 1) * W2 + self.pos[1] + 1
-        dist[s] = 0
-        q = deque([s])
-        offs = (-W2 - 1, -W2, -W2 + 1, -1, 1, W2 - 1, W2, W2 + 1)
-        while q:
-            u = q.popleft()
-            du = dist[u] + 1
-            for o in offs:
-                v = u + o
-                if dist[v] < 0 and not blk[v]:
-                    dist[v] = du
-                    parent[v] = u
-                    q.append(v)
-        return np.array(dist).reshape(H + 2, W2)[1:-1, 1:-1], parent, s, W2
-
-    def plan(self, world: "World"):
-        self.last_plan = world.t
-        self.replan = False
-        self.target = None
-        self.path.clear()
-        need = self.belief == UNKNOWN
-        ys, xs = np.nonzero(need)
-        anchors = self.anchors(world)
-        ids = [a[0] for a in anchors]
-        if len(ys) == 0 or self.id not in ids:
-            self.share = 0.0
-            return
-
-        # 1) decentralised, capability-weighted Voronoi partition of the uncovered cells
-        pts = np.stack([ys, xs], 1).astype(float)
-        apos = np.array([a[1] for a in anchors], float)
-        w = np.sqrt(np.array([a[2] for a in anchors], float))
-        d = np.linalg.norm(pts[None] - apos[:, None], axis=2) / w[:, None]
-        mine = d.argmin(0) == ids.index(self.id)
-        self.share = float(mine.mean())
-
-        # 2) utility / cost target selection inside my territory
-        py, px = self.pos
-        has_block = bool((self.belief == BLOCKED).any())
-        if has_block:                                # path-aware distances around no-fly cells
-            dist, parent, s, W2 = self._bfs()
-            dcell = dist[ys, xs]
-        else:                                        # open field: Chebyshev == 8-connected BFS
-            dcell = np.maximum(np.abs(ys - py), np.abs(xs - px))
-        reach = dcell >= 0
-        gain = box_sum(need, self.radius)[ys, xs]
-        score = gain / (dcell + 1 + self.radius)
-        cand = reach & mine
-        if not cand.any() and world.cfg.adaptive:   # territory finished -> help where work is left
-            cand = reach
-        if not cand.any():
-            return                                   # nothing reachable (e.g. enclosed by no-fly cells)
-        score = np.where(cand, score + 1e-6 * world.rng.random(len(ys)), -1.0)
-        k = int(score.argmax())
-        self.target = (int(ys[k]), int(xs[k]))
-
-        # 3) path: straight line if clear (clean sweeps), otherwise BFS around no-fly cells
-        line = self._line(self.target)
-        if has_block and any(self.belief[c] == BLOCKED for c in line):
-            v = (self.target[0] + 1) * W2 + self.target[1] + 1
-            line = []
-            while v != s:
-                line.append((v // W2 - 1, v % W2 - 1))
-                v = parent[v]
-            line.reverse()
-        self.path = deque(line)
-
-    def _line(self, tgt) -> list:
-        n = max(abs(tgt[0] - self.pos[0]), abs(tgt[1] - self.pos[1]))
-        if n == 0:
-            return []
-        ys = np.rint(np.linspace(self.pos[0], tgt[0], n + 1)).astype(int)[1:]
-        xs = np.rint(np.linspace(self.pos[1], tgt[1], n + 1)).astype(int)[1:]
-        return list(zip(ys.tolist(), xs.tolist()))
-
-    # ---- motion
-    def move(self, world: "World"):
-        if not self.path:
-            self.budget = 0.0
-            return
-        self.budget += self.speed
-        while self.budget >= 1 and self.path:
-            nxt = self.path[0]
-            if self.belief[nxt] == BLOCKED:      # discovered a no-fly cell on my path
-                self.path.clear()
-                self.target = None
-                self.replan = True
-                return
-            step = math.hypot(nxt[0] - self.pos[0], nxt[1] - self.pos[1])
-            self.pos = nxt
-            self.path.popleft()
-            self.budget -= 1
-            self.battery -= step
-            self.distance += step
-            world.sense(self)
-            if self.battery <= 0:
-                self.alive = False
-                world.log(f"drone {self.id} ran out of battery")
-                return
-        if not self.path:
-            self.replan = True
+    def coverage_ratio(self) -> float:
+        return float(np.mean(self.visited)) * 100.0
 
 
-# --------------------------------------------------------------------------- the world
-class World:
-    def __init__(self, cfg: Config, events: list[Event]):
-        self.cfg = cfg
-        self.events = sorted(events, key=lambda e: e.t)
-        self.rng = np.random.default_rng(cfg.seed)
-        n = cfg.grid
-        self.covered = np.zeros((n, n), bool)
-        self.blocked = np.zeros((n, n), bool)
-        self.t = 0
-        self.obs_redundant = 0
-        self.idle_steps = 0
-        cols = np.linspace(2, n - 3, cfg.n_drones).round().astype(int)
-        self.drones = [Drone(i, (n - 1, int(c)), cfg) for i, c in enumerate(cols)]
-        initial = {d.id: PeerInfo(d.pos, d.weight, 0) for d in self.drones}
-        for d in self.drones:                      # everybody is briefed at launch
-            d.peers = dict(initial)
-            d.frozen = [(i, p.pos, p.weight) for i, p in initial.items()]
-        self.hist_cov, self.hist_alive = [], []
-        self.hist_share = defaultdict(list)        # id -> [(t, share)]
-        self.traj = defaultdict(list)              # id -> [pos]
-        self.fired: list[Event] = []
-        self.frames = []
-        for d in self.drones:                      # initial sweep
-            self.sense(d)
+# =====================================================================
+# 2. SWAPPABLE COVERAGE ALGORITHM REGISTRY
+# =====================================================================
 
-    def log(self, msg: str):
-        print(f"[t={self.t:4d}] {msg}")
+AlgorithmFunc = Callable[[DroneState, List[DroneState], CoverageGrid], np.ndarray]
+ALGORITHMS: Dict[str, AlgorithmFunc] = {}
 
-    # ---- sensing (truth + the drone's own belief)
-    def sense(self, d: Drone):
-        H, W = self.covered.shape
-        y, x = d.pos
-        R = d.radius + 2                           # no-fly look-ahead
-        win = (slice(max(y - R, 0), min(y + R + 1, H)), slice(max(x - R, 0), min(x + R + 1, W)))
-        d.belief[win][self.blocked[win]] = BLOCKED
-        r = d.radius
-        win = (slice(max(y - r, 0), min(y + r + 1, H)), slice(max(x - r, 0), min(x + r + 1, W)))
-        free = ~self.blocked[win]
-        cov = self.covered[win]
-        mine = d.swept[win]
-        self.obs_redundant += int((free & cov & ~mine).sum())   # already done by someone else
-        mine |= free
-        cov |= free
-        bw = d.belief[win]
-        bw[free & (bw == UNKNOWN)] = COVERED
 
-    # ---- events
-    def nearest_free(self, pos):
-        H, W = self.blocked.shape
-        for rad in range(1, max(H, W)):
-            for dy in range(-rad, rad + 1):
-                for dx in range(-rad, rad + 1):
-                    if max(abs(dy), abs(dx)) != rad:
-                        continue
-                    y, x = pos[0] + dy, pos[1] + dx
-                    if 0 <= y < H and 0 <= x < W and not self.blocked[y, x]:
-                        return (y, x)
-        return pos
+def register_algorithm(name: str):
+    """Decorator to register a new coverage algorithm by name."""
 
-    def apply(self, ev: Event):
-        drone = next((d for d in self.drones if d.id == ev.drone and d.alive), None)
-        needs_drone = ev.kind in ("FAIL", "SLOW", "SENSOR", "COMM")
-        if needs_drone and drone is None:
-            return
-        self.log(f"EVENT {ev.kind}: {ev.label}")
-        if ev.kind == "FAIL":
-            drone.alive = False
-        elif ev.kind == "SLOW":
-            drone.speed = ev.value
-        elif ev.kind == "SENSOR":
-            drone.radius = int(ev.value)
-        elif ev.kind == "COMM":
-            drone.comm_range *= ev.value
-        elif ev.kind == "NOFLY":
-            r0, c0, h, w = ev.rect
-            self.blocked[r0:r0 + h, c0:c0 + w] = True
-            for d in self.drones:
-                if d.alive and self.blocked[d.pos]:    # emergency sidestep
-                    d.pos = self.nearest_free(d.pos)
-                    d.path.clear()
-                    d.replan = True
-        elif ev.kind == "JOIN":
-            if not self.cfg.adaptive:
-                self.log("  (static baseline cannot absorb a new drone - ignored)")
-                return
-            n = self.cfg.grid
-            nd = Drone(max(d.id for d in self.drones) + 1, (n - 1, 0), self.cfg)
-            nd.peers = {nd.id: PeerInfo(nd.pos, nd.weight, self.t)}   # knows nobody yet
-            self.drones.append(nd)
-            self.sense(nd)
-        self.fired.append(dataclasses.replace(ev))
+    def decorator(func: AlgorithmFunc):
+        ALGORITHMS[name] = func
+        return func
 
-    # ---- gossip
-    def communicate(self, alive: list[Drone]):
-        snap = {d.id: (d.belief.copy(), dict(d.peers)) for d in alive}
-        for a in alive:
-            for b in alive:
-                if a is b or math.dist(a.pos, b.pos) > min(a.comm_range, b.comm_range):
+    return decorator
+
+
+@register_algorithm("voronoi")
+def voronoi_lloyd_coverage(
+    ego: DroneState, neighbors: List[DroneState], grid: CoverageGrid
+) -> np.ndarray:
+    """
+    Decentralized Centroidal Voronoi Tessellation (Lloyd's Algorithm).
+    Each drone computes its local Voronoi cell using only active neighbors within
+    communication range and moves toward the uncertainty-weighted centroid.
+    """
+    pts = grid.cell_centers
+    weights = grid.uncertainty**2  # Prioritize highly uncertain cells
+
+    # Compute distances from all grid cells to ego drone
+    ego_dists = np.linalg.norm(pts - ego.pos[:2], axis=1)
+    in_ego_cell = np.ones(len(pts), dtype=bool)
+
+    # Filter grid cells closer to any active neighbor than to ego
+    for nb in neighbors:
+        if not nb.active or nb.id == ego.id:
+            continue
+        nb_dists = np.linalg.norm(pts - nb.pos[:2], axis=1)
+        in_ego_cell &= ego_dists <= nb_dists
+
+    if not np.any(in_ego_cell):
+        return ego.pos.copy()
+
+    cell_pts = pts[in_ego_cell]
+    cell_weights = weights[in_ego_cell]
+    centroid_2d = np.average(cell_pts, axis=0, weights=cell_weights)
+
+    return np.array([centroid_2d[0], centroid_2d[1], 2.0])
+
+
+@register_algorithm("frontier")
+def marvel_colmar_frontier_coverage(
+    ego: DroneState, neighbors: List[DroneState], grid: CoverageGrid
+) -> np.ndarray:
+    """
+    Cooperative Frontier / Viewpoint Utility Selection (inspired by MARVEL & COLMAR).
+    Samples candidate viewpoints, scores them by expected information gain within FOV,
+    and penalizes overlap with neighbors' current targets and positions.
+    """
+    pts = grid.cell_centers
+    unc = grid.uncertainty
+
+    # Candidate viewpoints: top uncertain cells
+    high_unc_idx = np.argsort(unc)[-60:]
+    candidates = pts[high_unc_idx]
+
+    best_score = -1e9
+    best_target = ego.pos[:2]
+
+    for cand in candidates:
+        # 1. Information gain around candidate viewpoint
+        d_cells = np.linalg.norm(pts - cand, axis=1)
+        info_gain = np.sum(unc[d_cells <= ego.fov_radius])
+
+        # 2. Travel cost from ego drone
+        dist_cost = np.linalg.norm(cand - ego.pos[:2]) * 1.8
+
+        # 3. Cooperative coordination penalty (avoid clustering around neighbor targets)
+        coord_penalty = 0.0
+        for nb in neighbors:
+            if not nb.active or nb.id == ego.id:
+                continue
+            d_nb_target = np.linalg.norm(cand - nb.target[:2])
+            d_nb_pos = np.linalg.norm(cand - nb.pos[:2])
+            if d_nb_target < ego.fov_radius * 1.5:
+                coord_penalty += 15.0 / (d_nb_target + 0.5)
+            if d_nb_pos < ego.fov_radius:
+                coord_penalty += 10.0
+
+        score = info_gain - dist_cost - coord_penalty
+        if score > best_score:
+            best_score = score
+            best_target = cand
+
+    return np.array([best_target[0], best_target[1], 2.0])
+
+
+@register_algorithm("potential_field")
+def potential_field_coverage(
+    ego: DroneState, neighbors: List[DroneState], grid: CoverageGrid
+) -> np.ndarray:
+    """
+    Decentralized Artificial Potential Field (APF).
+    Repelled by nearby active drones; attracted by nearby high-uncertainty cells.
+    """
+    force = np.zeros(2)
+
+    # Attractive force toward uncertain cells
+    vecs = grid.cell_centers - ego.pos[:2]
+    dists = np.linalg.norm(vecs, axis=1) + 1e-4
+    attr_weights = (grid.uncertainty**3) / (dists**1.5)
+    force += np.sum((vecs / dists[:, None]) * attr_weights[:, None], axis=0) * 0.08
+
+    # Repulsive force from neighbors
+    for nb in neighbors:
+        if not nb.active or nb.id == ego.id:
+            continue
+        diff = ego.pos[:2] - nb.pos[:2]
+        d = np.linalg.norm(diff) + 1e-4
+        if d < 4.5:
+            force += (diff / d) * (6.0 / (d**2))
+
+    # Step in direction of resultant force
+    norm = np.linalg.norm(force)
+    step = (force / norm) * min(norm, 2.5) if norm > 1e-3 else np.zeros(2)
+    target_2d = np.clip(ego.pos[:2] + step, -grid.size / 2 + 1.0, grid.size / 2 - 1.0)
+    return np.array([target_2d[0], target_2d[1], 2.0])
+
+
+# =====================================================================
+# 3. MUJOCO ARENA GENERATOR & EVENT MANAGER
+# =====================================================================
+
+
+def build_swarm_xml(num_drones: int, arena_size: float = 16.0) -> str:
+    """Generates a MuJoCo MJCF XML model with N quadrotor bodies and visual target markers."""
+    half = arena_size / 2.0
+    drone_bodies = []
+    actuators = []
+
+    colors = [
+        "0.2 0.8 0.3 1",
+        "0.2 0.6 1.0 1",
+        "1.0 0.6 0.1 1",
+        "0.9 0.2 0.8 1",
+        "0.1 0.9 0.9 1",
+        "0.9 0.9 0.2 1",
+    ]
+
+    for i in range(num_drones):
+        angle = 2 * np.pi * i / num_drones
+        sx, sy = 2.0 * np.cos(angle), 2.0 * np.sin(angle)
+        color = colors[i % len(colors)]
+
+        drone_bodies.append(f"""
+        <body name="drone_{i}" pos="{sx:.2f} {sy:.2f} 2.0">
+            <freejoint name="joint_{i}"/>
+            <geom name="core_{i}" type="box" size="0.22 0.22 0.06" rgba="{color}" mass="1.0"/>
+            <geom type="cylinder" pos="0.22 0.22 0.04" size="0.12 0.01" rgba="0.8 0.8 0.8 0.7" mass="0.05"/>
+            <geom type="cylinder" pos="-0.22 0.22 0.04" size="0.12 0.01" rgba="0.8 0.8 0.8 0.7" mass="0.05"/>
+            <geom type="cylinder" pos="0.22 -0.22 0.04" size="0.12 0.01" rgba="0.8 0.8 0.8 0.7" mass="0.05"/>
+            <geom type="cylinder" pos="-0.22 -0.22 0.04" size="0.12 0.01" rgba="0.8 0.8 0.8 0.7" mass="0.05"/>
+            <!-- FOV Ground Projection Ring -->
+            <site name="fov_{i}" pos="0 0 -1.95" size="2.2 2.2 0.01" type="cylinder" rgba="{color[:11]} 0.18"/>
+        </body>
+        <!-- Mocap marker showing each drone's current algorithm target -->
+        <body name="target_vis_{i}" mocap="true" pos="{sx:.2f} {sy:.2f} 0.05">
+            <geom name="target_geom_{i}" type="sphere" size="0.18" rgba="{color}" contype="0" conaffinity="0"/>
+        </body>
+        """)
+
+        actuators.append(f"""
+        <general name="fx_{i}" joint="joint_{i}" gear="1 0 0 0 0 0" ctrlrange="-25 25"/>
+        <general name="fy_{i}" joint="joint_{i}" gear="0 1 0 0 0 0" ctrlrange="-25 25"/>
+        <general name="fz_{i}" joint="joint_{i}" gear="0 0 1 0 0 0" ctrlrange="-25 35"/>
+        """)
+
+    return f"""
+    <mujoco model="drone_swarm_coverage">
+        <option timestep="0.01" gravity="0 0 -9.81" integrator="RK4"/>
+        <visual>
+            <headlight diffuse="0.7 0.7 0.7" ambient="0.3 0.3 0.3"/>
+        </visual>
+        <worldbody>
+            <light pos="0 0 15" dir="0 0 -1" directional="true"/>
+            <geom name="floor" type="plane" size="{half} {half} 0.1" rgba="0.18 0.20 0.24 1"/>
+            <!-- Arena Boundary Walls -->
+            <geom type="box" pos="0 {half} 0.5" size="{half} 0.1 0.5" rgba="0.4 0.4 0.4 0.5"/>
+            <geom type="box" pos="0 {-half} 0.5" size="{half} 0.1 0.5" rgba="0.4 0.4 0.4 0.5"/>
+            <geom type="box" pos="{half} 0 0.5" size="0.1 {half} 0.5" rgba="0.4 0.4 0.4 0.5"/>
+            <geom type="box" pos="{-half} 0 0.5" size="0.1 {half} 0.5" rgba="0.4 0.4 0.4 0.5"/>
+            {"".join(drone_bodies)}
+        </worldbody>
+        <actuator>
+            {"".join(actuators)}
+        </actuator>
+    </mujoco>
+    """
+
+
+def trigger_swarm_events(step: int, drones: List[DroneState], model: mujoco.MjModel):
+    """
+    Injects dynamic swarm events to test decentralized self-healing:
+      - Step 400: Drone 0 suffers critical failure and drops out.
+      - Step 800: Drone 1 suffers partial sensor degradation (reduced FOV).
+      - Step 1100: Drone 0 recovers and rejoins the swarm.
+    """
+    if step == 400 and len(drones) > 0:
+        drones[0].active = False
+        geom_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "core_0")
+        model.geom_rgba[geom_id] = [0.8, 0.1, 0.1, 0.4]  # Turn dim red on failure
+        print(
+            f"\n[EVENT @ Step {step}] Drone 0 FAILED! Remaining swarm redistributing area..."
+        )
+
+    elif step == 800 and len(drones) > 1:
+        drones[1].fov_radius = 1.2
+        print(
+            f"\n[EVENT @ Step {step}] Drone 1 FOV degraded to 1.2m! Adapting coverage..."
+        )
+
+    elif step == 1100 and len(drones) > 0:
+        drones[0].active = True
+        geom_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "core_0")
+        model.geom_rgba[geom_id] = [0.2, 0.8, 0.3, 1.0]
+        print(f"\n[EVENT @ Step {step}] Drone 0 RECOVERED and rejoined swarm!")
+
+
+# =====================================================================
+# 4. SIMULATION LOOP (HEADLESS & VISUAL MODES)
+# =====================================================================
+
+
+def run_simulation(algo_name: str, mode: str, num_drones: int, max_steps: int):
+    algo_fn = ALGORITHMS[algo_name]
+    xml_str = build_swarm_xml(num_drones=num_drones)
+    model = mujoco.MjModel.from_xml_string(xml_str)
+    data = mujoco.MjData(model)
+    grid = CoverageGrid(size=16.0, resolution=40)
+
+    drones = [
+        DroneState(id=i, pos=np.zeros(3), vel=np.zeros(3), yaw=0.0)
+        for i in range(num_drones)
+    ]
+
+    print(
+        f"=== Starting Swarm Simulation | Mode: {mode.upper()} | Algorithm: {algo_name.upper()} ==="
+    )
+
+    def step_simulation(step_idx: int):
+        # 1. Sync state from MuJoCo physics
+        for i, d in enumerate(drones):
+            qpos_adr = i * 7
+            qvel_adr = i * 6
+            d.pos = data.qpos[qpos_adr : qpos_adr + 3].copy()
+            d.vel = data.qvel[qvel_adr : qvel_adr + 3].copy()
+            # Lock orientation upright to focus on 3D position + coverage control
+            data.qpos[qpos_adr + 3 : qpos_adr + 7] = [1.0, 0.0, 0.0, 0.0]
+            data.qvel[qvel_adr + 3 : qvel_adr + 6] = [0.0, 0.0, 0.0]
+
+        # 2. Check for dynamic swarm events (failures, sensor degradation, recovery)
+        trigger_swarm_events(step_idx, drones, model)
+
+        # 3. Update coverage map
+        grid.update(drones)
+
+        # 4. Recompute decentralized targets every 10 physics steps (10 Hz planner)
+        if step_idx % 10 == 0:
+            for d in drones:
+                if not d.active:
+                    d.target = np.array([d.pos[0], d.pos[1], 0.1])  # Land on failure
                     continue
-                belief, peers = snap[b.id]
-                np.maximum(a.belief, belief, out=a.belief)
-                for pid, info in peers.items():
-                    cur = a.peers.get(pid)
-                    if cur is None or info.stamp > cur.stamp:
-                        a.peers[pid] = info
+                # Decentralized communication filter: only see neighbors within comm_radius
+                local_neighbors = [
+                    nb
+                    for nb in drones
+                    if nb.id != d.id and np.linalg.norm(nb.pos - d.pos) <= d.comm_radius
+                ]
+                d.target = algo_fn(d, local_neighbors, grid)
+                data.mocap_pos[d.id] = [d.target[0], d.target[1], 0.05]
 
-    # ---- main loop
-    def coverage(self) -> float:
-        free = ~self.blocked
-        return float((self.covered & free).sum() / free.sum())
+        # 5. Low-level PD Flight Controller + Gravity Compensation
+        kp, kd = 6.0, 4.5
+        drone_mass = 1.2  # Core + 4 rotors
+        for i, d in enumerate(drones):
+            pos_err = d.target - d.pos
+            # Clamp max horizontal speed to ~2.5 m/s
+            vel_cmd = np.clip(pos_err * kp, -8.0, 8.0)
+            acc_cmd = vel_cmd - kd * d.vel
+            data.ctrl[i * 3 + 0] = drone_mass * acc_cmd[0]
+            data.ctrl[i * 3 + 1] = drone_mass * acc_cmd[1]
+            data.ctrl[i * 3 + 2] = drone_mass * (acc_cmd[2] + 9.81)
 
-    def step(self):
-        for ev in [e for e in self.events if e.t == self.t]:
-            self.apply(ev)
-        for d in [d for d in self.drones if d.alive]:
-            stale = (d.replan or self.t - d.last_plan >= self.cfg.replan_period
-                     or (d.target is not None and d.belief[d.target] != UNKNOWN))
-            if stale:
-                d.plan(self)
-            d.move(self)
-        alive = [d for d in self.drones if d.alive]
-        for d in alive:
-            d.heartbeat(self.t)
-        self.communicate(alive)
+        mujoco.mj_step(model, data)
 
-        self.hist_cov.append(self.coverage())
-        self.hist_alive.append(len(alive))
-        for d in alive:
-            self.hist_share[d.id].append((self.t, d.share))
-            self.traj[d.id].append(d.pos)
-        self.idle_steps = self.idle_steps + 1 if alive and all(d.target is None for d in alive) else 0
-        if self.cfg.frame_every and self.t % self.cfg.frame_every == 0:
-            self.frames.append((self.covered.copy(), self.blocked.copy(), self.t,
-                                [(d.id, d.pos, d.alive) for d in self.drones], self.hist_cov[-1]))
-        self.t += 1
+        if step_idx % 200 == 0:
+            active_cnt = sum(1 for d in drones if d.active)
+            print(
+                f"Step {step_idx:04d}/{max_steps} | "
+                f"Active Drones: {active_cnt}/{num_drones} | "
+                f"Area Visited: {grid.coverage_ratio:.1f}% | "
+                f"Mean Uncertainty: {np.mean(grid.uncertainty):.3f}"
+            )
 
-    def finished(self) -> bool:
-        return (self.t >= self.cfg.max_steps or not any(d.alive for d in self.drones)
-                or (self.hist_cov and self.hist_cov[-1] >= self.cfg.target_coverage)
-                or self.idle_steps >= 30)
+    # Execute in selected mode
+    if mode == "visual":
+        from mujoco import viewer  # <-- Fixes UnboundLocalError by binding 'viewer', not 'mujoco'
+        with viewer.launch_passive(model, data) as v:
+            step_idx = 0
+            while v.is_running() and step_idx < max_steps:
+                t0 = time.perf_counter()
+                step_simulation(step_idx)
+                v.sync()
+                step_idx += 1
+                elapsed = time.perf_counter() - t0
+                if elapsed < model.opt.timestep:
+                    time.sleep(model.opt.timestep - elapsed)
+    else:
+        # Headless Mode (also verifies GPU EGL offscreen rendering)
+        renderer = mujoco.Renderer(model, height=480, width=640)
+        for step_idx in range(max_steps):
+            step_simulation(step_idx)
 
-    def summary(self) -> dict:
-        return dict(mode="adaptive" if self.cfg.adaptive else "static", steps=self.t,
-                    coverage=self.hist_cov[-1] if self.hist_cov else 0.0,
-                    distance=sum(d.distance for d in self.drones),
-                    overlap=self.obs_redundant / max(int(self.covered.sum()), 1),
-                    alive=sum(d.alive for d in self.drones), total=len(self.drones))
+        # Save a snapshot of the final swarm state to the shared volume
+        renderer.update_scene(data)
+        frame = renderer.render()
+        import imageio.v3 as iio
 
-
-def run(cfg: Config, events: list[Event]) -> World:
-    world = World(cfg, events)
-    while not world.finished():
-        world.step()
-    return world
-
-
-# --------------------------------------------------------------------------- output
-def print_summary(rows: list[dict]):
-    print("\n mode      steps  coverage  total flight  inter-drone overlap  drones alive")
-    for r in rows:
-        print(f" {r['mode']:<9} {r['steps']:5d}  {r['coverage']:7.1%}  {r['distance']:12.0f}"
-              f"  {r['overlap']:19.1%}  {r['alive']:6d}/{r['total']}")
-
-
-def plot(world: World, baseline: World | None, out: str):
-    import matplotlib.pyplot as plt
-    from matplotlib.colors import ListedColormap
-
-    state = np.where(world.blocked, 2, np.where(world.covered, 1, 0))
-    colors = plt.get_cmap("tab10")
-    fig, ax = plt.subplots(1, 3, figsize=(17, 5))
-
-    ax[0].imshow(state, cmap=ListedColormap(["#eeeeee", "#cfe8cf", "#222222"]), vmin=0, vmax=2)
-    for d in world.drones:
-        tr = np.array(world.traj[d.id])
-        if len(tr):
-            ax[0].plot(tr[:, 1], tr[:, 0], lw=1, color=colors(d.id % 10), label=f"drone {d.id}")
-            ax[0].scatter(tr[-1, 1], tr[-1, 0], marker="o" if d.alive else "X", s=70,
-                          color=colors(d.id % 10), edgecolor="k", zorder=3)
-    ax[0].set_title(f"Final map ({world.coverage():.1%} covered)\n● flying   ✕ lost")
-    ax[0].legend(fontsize=7, loc="upper right")
-
-    ax[1].plot(world.hist_cov, label="adaptive" if world.cfg.adaptive else "static")
-    if baseline is not None:
-        ax[1].plot(baseline.hist_cov, "--",
-                   label="adaptive" if baseline.cfg.adaptive else "static")
-    for i, ev in enumerate(world.fired):
-        ax[1].axvline(ev.t, color="grey", lw=.8, ls=":")
-        ax[1].text(ev.t, 0.02 + 0.07 * (i % 4), f" {ev.kind}", fontsize=7, rotation=90, va="bottom")
-    ax[1].set_ylim(0, 1.02)
-    ax[1].set(xlabel="step", ylabel="coverage of free area", title="Coverage over time")
-    ax[1].legend()
-    ax[1].grid(alpha=.3)
-
-    for pid, series in world.hist_share.items():
-        ts, sh = zip(*series)
-        sh = np.convolve(np.pad(sh, (4, 0), mode="edge"), np.ones(5) / 5, mode="valid")  # 5-step average
-        ax[2].plot(ts, sh, color=colors(pid % 10), label=f"drone {pid}")
-    for ev in world.fired:
-        ax[2].axvline(ev.t, color="grey", lw=.8, ls=":")
-    ax[2].set(xlabel="step", ylabel="share of remaining area (own view)",
-              title="Decentralised territory re-allocation")
-    ax[2].legend(fontsize=7)
-    ax[2].grid(alpha=.3)
-
-    fig.tight_layout()
-    fig.savefig(out, dpi=130)
-    print(f"saved {out}")
-
-
-def save_gif(world: World, path: str):
-    import matplotlib.pyplot as plt
-    from matplotlib.animation import FuncAnimation, PillowWriter
-    from matplotlib.colors import ListedColormap
-
-    fig, ax = plt.subplots(figsize=(5.5, 5.5))
-    cmap = ListedColormap(["#eeeeee", "#cfe8cf", "#222222"])
-    img = ax.imshow(np.zeros_like(world.covered, dtype=int), cmap=cmap, vmin=0, vmax=2)
-    sc = ax.scatter([], [], s=60, edgecolor="k", zorder=3)
-    ax.set_xticks([]), ax.set_yticks([])
-    tab = plt.get_cmap("tab10")
-
-    def update(i):
-        cov, blk, t, drones, c = world.frames[i]
-        img.set_data(np.where(blk, 2, np.where(cov, 1, 0)))
-        sc.set_offsets([[p[1], p[0]] for _, p, _ in drones])
-        sc.set_color([tab(u % 10) if a else "red" for u, _, a in drones])
-        ax.set_title(f"t={t}   coverage {c:.1%}")
-        return img, sc
-
-    FuncAnimation(fig, update, frames=len(world.frames)).save(path, writer=PillowWriter(fps=10))
-    print(f"saved {path}")
-
-
-# --------------------------------------------------------------------------- CLI
-def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--grid", type=int, default=50)
-    ap.add_argument("--drones", type=int, default=5)
-    ap.add_argument("--sensor-radius", type=int, default=2)
-    ap.add_argument("--comm-range", type=float, default=25.0)
-    ap.add_argument("--timeout", type=int, default=25, help="heartbeat timeout (steps)")
-    ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--max-steps", type=int, default=1500)
-    ap.add_argument("--static", action="store_true", help="static partition baseline instead of adaptive")
-    ap.add_argument("--compare", action="store_true", help="also run the other mode and compare")
-    ap.add_argument("--no-events", action="store_true")
-    ap.add_argument("--out", default="coverage_result.png")
-    ap.add_argument("--gif", default="", help="write an animation to this path")
-    ap.add_argument("--show", action="store_true", help="open a window (needs a display)")
-    a = ap.parse_args()
-
-    import matplotlib
-    if not a.show:
-        matplotlib.use("Agg")
-
-    cfg = Config(grid=a.grid, n_drones=a.drones, sensor_radius=a.sensor_radius,
-                 comm_range=a.comm_range, heartbeat_timeout=a.timeout, seed=a.seed,
-                 max_steps=a.max_steps, adaptive=not a.static, frame_every=5 if a.gif else 0)
-    events = [] if a.no_events else default_events(cfg)
-
-    world = run(cfg, events)
-    rows = [world.summary()]
-    other = None
-    if a.compare:
-        print("\n--- running the other mode on the identical scenario ---")
-        other = run(dataclasses.replace(cfg, adaptive=not cfg.adaptive, frame_every=0), events)
-        rows.append(other.summary())
-    print_summary(rows)
-
-    plot(world, other, a.out)
-    if a.gif:
-        save_gif(world, a.gif)
-    if a.show:
-        import matplotlib.pyplot as plt
-        plt.show()
+        iio.imwrite("headless_final_snapshot.png", frame)
+        renderer.close()
+        print("Saved offscreen GPU render to 'headless_final_snapshot.png'")
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Decentralized Drone Swarm Coverage Testbed"
+    )
+    parser.add_argument(
+        "--algo",
+        type=str,
+        default="voronoi",
+        choices=list(ALGORITHMS.keys()),
+        help="Coverage algorithm to execute",
+    )
+    parser.add_argument(
+        "--mode",
+        type=str,
+        default="headless",
+        choices=["headless", "visual"],
+        help="Run in headless offscreen GPU mode or interactive GUI mode",
+    )
+    parser.add_argument(
+        "--drones", type=int, default=5, help="Number of drones in swarm"
+    )
+    parser.add_argument("--steps", type=int, default=1600, help="Simulation steps")
+    args = parser.parse_args()
+
+    run_simulation(
+        algo_name=args.algo,
+        mode=args.mode,
+        num_drones=args.drones,
+        max_steps=args.steps,
+    )
