@@ -33,7 +33,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
     gymnasium-robotics \
     numpy \
     scipy \
-    imageio[ffmpeg]
+    imageio[ffmpeg] \
+    matplotlib
 
 WORKDIR /workspace
 
