@@ -600,7 +600,6 @@ def nearest_unvisited_coverage(
     # Pick the closest unvisited cell
     closest_cell_xy = unvisited_positions[int(np.argmin(distances_to_ego))]
     safe_target_xy = apply_obstacle_clearance(closest_cell_xy, grid)
-    # safe_target_xy = closest_cell_xy
 
     return np.array(
         [float(safe_target_xy[0]), float(safe_target_xy[1]), 2.4], dtype=np.float64
