@@ -1,212 +1,248 @@
+"""
+Decentralized 3D Drone Swarm Area Coverage Simulation (MuJoCo)
+==============================================================
+Simulates a team of quadrotor drones equipped with downward-facing monocular
+or stereo cameras exploring a 3D environment with obstacles.
+
+Key Features:
+  - Fully decentralized decision-making: drones only communicate with active
+    peers within `comm_radius` and automatically redistribute workload when a
+    drone fails or recovers.
+  - High-speed vectorized camera frustum projection + MuJoCo C-level raycasting
+    (`mj_multiRay` with fallback) for realistic 3D building occlusion.
+  - Plugin architecture (`@register_algorithm`) allowing new coverage strategies
+    to be added in a single function and selected via `--algo`.
+"""
+
 import argparse
 import os
 import time
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional
-import numpy as np
-import mujoco
+from typing import Callable, Dict, List, Optional, Tuple
+
 import imageio.v3 as iio
+import mujoco
+import numpy as np
+
 
 # =====================================================================
-# 1. SENSOR & SCENARIO CONFIGURATION
+# 1. DATA STRUCTURES: SENSOR, DRONE STATE, AND COVERAGE GRID
 # =====================================================================
 
 
 @dataclass
 class CameraSpec:
-    sensor_type: str = "stereo"  # "mono" or "stereo"
-    fovy: float = 65.0  # Vertical FOV in degrees
-    aspect: float = 1.33  # 4:3 sensor aspect ratio
-    baseline: float = 0.12  # 12 cm stereo baseline (distance between L/R cameras)
-    max_depth: float = 5.5  # Max reliable depth / sensing range (meters)
-    min_depth: float = 0.4  # Minimum depth range (meters)
+    """Defines the optical and depth parameters of each drone's downward camera."""
 
-
-@dataclass
-class CoverageGrid:
-    """Grid representation that tracks BOTH global truth and per-drone individual maps."""
-
-    num_drones: int
-    size: float = 16.0
-    resolution: int = 45
-
-    def __post_init__(self):
-        half = self.size / 2.0
-        coords = np.linspace(
-            -half + (half / self.resolution),
-            half - (half / self.resolution),
-            self.resolution,
-        )
-        gx, gy = np.meshgrid(coords, coords)
-        # 3D ground coordinates (x, y, z=0.02)
-        self.cell_centers = np.stack([gx.ravel(), gy.ravel()], axis=-1)
-        self.num_cells = len(self.cell_centers)
-
-        # Individual coverage maps (solely what each drone's own camera captured)
-        self.drone_sole_visited = np.zeros(
-            (self.num_drones, self.num_cells), dtype=bool
-        )
-
-        # Decentralized belief maps (what each drone knows after P2P sharing with neighbors)
-        self.drone_belief_uncertainty = np.ones(
-            (self.num_drones, self.num_cells), dtype=np.float32
-        )
-
-        # Obstacle mask (cells inside 3D buildings are excluded from coverage metric)
-        self.free_cells = np.ones(self.num_cells, dtype=bool)
-
-    def mark_obstacles(self, model: mujoco.MjModel, data: mujoco.MjData):
-        """Identify grid cells occupied by static 3D obstacles using downward raycasts."""
-        pnt = np.array([0.0, 0.0, 10.0], dtype=np.float64)
-        vec = np.array([0.0, 0.0, -1.0], dtype=np.float64)
-        geomid = np.zeros(1, dtype=np.int32)
-        for idx, (cx, cy) in enumerate(self.cell_centers):
-            pnt[0], pnt[1] = cx, cy
-            dist = mujoco.mj_ray(model, data, pnt, vec, None, 1, -1, geomid)
-            # If ray hits an obstacle higher than the floor (z > 0.2m)
-            if 0.0 < dist < 9.8:
-                self.free_cells[idx] = False
-                self.drone_belief_uncertainty[:, idx] = 0.0
-
-    def update_from_cameras(
-        self,
-        drones: List["DroneState"],
-        cam_spec: CameraSpec,
-        model: mujoco.MjModel,
-        data: mujoco.MjData,
-        decay_rate: float = 0.25,
-    ):
-        """
-        Updates each drone's individual coverage using a camera frustum model +
-        3D MuJoCo raycasting (mj_ray) for obstacle occlusion.
-        """
-        half_fovy_rad = np.deg2rad(cam_spec.fovy / 2.0)
-        tan_y = np.tan(half_fovy_rad)
-        tan_x = tan_y * cam_spec.aspect
-
-        geomid = np.zeros(1, dtype=np.int32)
-
-        for d in drones:
-            if not d.active:
-                continue
-
-            # Drone body ID to exclude self-collision during raycasting
-            body_id = mujoco.mj_name2id(
-                model, mujoco.mjtObj.mjOBJ_BODY, f"drone_{d.id}"
-            )
-
-            # Relative vector from camera to all free ground cells
-            rel_xy = self.cell_centers - d.pos[:2]
-            height = max(d.pos[2], 0.2)
-            dists_3d = np.sqrt(np.sum(rel_xy**2, axis=1) + height**2)
-
-            # Rotate relative XY into drone's yaw frame
-            c, s = np.cos(-d.yaw), np.sin(-d.yaw)
-            local_x = c * rel_xy[:, 0] - s * rel_xy[:, 1]
-            local_y = s * rel_xy[:, 0] + c * rel_xy[:, 1]
-
-            # Check camera Rectangular Frustum bounds
-            if cam_spec.sensor_type == "mono":
-                in_frustum = (
-                    (np.abs(local_x) <= height * tan_x)
-                    & (np.abs(local_y) <= height * tan_y)
-                    & (dists_3d <= cam_spec.max_depth)
-                    & (dists_3d >= cam_spec.min_depth)
-                    & self.free_cells
-                )
-            else:
-                # Stereo requires point to be visible inside the overlapping left & right frustums
-                half_b = cam_spec.baseline / 2.0
-                in_left = (np.abs(local_x + half_b) <= height * tan_x) & (
-                    np.abs(local_y) <= height * tan_y
-                )
-                in_right = (np.abs(local_x - half_b) <= height * tan_x) & (
-                    np.abs(local_y) <= height * tan_y
-                )
-                in_frustum = (
-                    in_left
-                    & in_right
-                    & (dists_3d <= cam_spec.max_depth)
-                    & (dists_3d >= cam_spec.min_depth)
-                    & self.free_cells
-                )
-
-            candidate_indices = np.where(in_frustum)[0]
-            cam_origin = np.array(
-                [d.pos[0], d.pos[1], d.pos[2] - 0.08], dtype=np.float64
-            )
-
-            for idx in candidate_indices:
-                target_pt = np.array(
-                    [self.cell_centers[idx, 0], self.cell_centers[idx, 1], 0.02],
-                    dtype=np.float64,
-                )
-                ray_vec = target_pt - cam_origin
-                ray_len = np.linalg.norm(ray_vec)
-                ray_dir = ray_vec / ray_len
-
-                # Raycast to check if any 3D obstacle blocks the camera line of sight
-                hit_dist = mujoco.mj_ray(
-                    model, data, cam_origin, ray_dir, None, 1, body_id, geomid
-                )
-                if hit_dist < 0 or hit_dist >= (ray_len - 0.15):
-                    # Unoccluded view of ground cell!
-                    self.drone_sole_visited[d.id, idx] = True
-                    self.drone_belief_uncertainty[d.id, idx] = max(
-                        0.05,
-                        self.drone_belief_uncertainty[d.id, idx] * (1.0 - decay_rate),
-                    )
-
-        # Decentralized P2P Map Merging between drones within comm_radius
-        for i, d_i in enumerate(drones):
-            if not d_i.active:
-                continue
-            for j, d_j in enumerate(drones):
-                if i < j and d_j.active:
-                    if np.linalg.norm(d_i.pos - d_j.pos) <= d_i.comm_radius:
-                        merged_unc = np.minimum(
-                            self.drone_belief_uncertainty[i],
-                            self.drone_belief_uncertainty[j],
-                        )
-                        self.drone_belief_uncertainty[i] = merged_unc.copy()
-                        self.drone_belief_uncertainty[j] = merged_unc.copy()
-
-    def get_drone_coverage_pct(self, drone_id: int) -> float:
-        free_count = np.sum(self.free_cells)
-        return (
-            float(np.sum(self.drone_sole_visited[drone_id] & self.free_cells))
-            / max(1, free_count)
-            * 100.0
-        )
-
-    @property
-    def combined_visited_map(self) -> np.ndarray:
-        """Union of all individual drone coverage maps."""
-        return np.any(self.drone_sole_visited, axis=0)
-
-    @property
-    def combined_coverage_pct(self) -> float:
-        free_count = np.sum(self.free_cells)
-        return (
-            float(np.sum(self.combined_visited_map & self.free_cells))
-            / max(1, free_count)
-            * 100.0
-        )
+    sensor_type: str = "stereo"  # "mono" (single lens) or "stereo" (overlapping L/R lenses)
+    fovy: float = 65.0           # Vertical field of view (degrees)
+    aspect: float = 1.33         # Width-to-height sensor aspect ratio (4:3)
+    baseline: float = 0.12       # Physical distance between left & right stereo lenses (m)
+    max_depth: float = 5.5       # Maximum effective sensing range (m)
+    min_depth: float = 0.4       # Minimum blind-spot distance near the lens (m)
 
 
 @dataclass
 class DroneState:
+    """Stores the real-time physical and decentralized networking state of one drone."""
+
     id: int
-    pos: np.ndarray
-    vel: np.ndarray
-    yaw: float = 0.0
-    active: bool = True
-    comm_radius: float = 9.0
-    target: np.ndarray = field(default_factory=lambda: np.zeros(3))
+    pos: np.ndarray              # Current 3D world position [x, y, z] (m)
+    vel: np.ndarray              # Current 3D linear velocity [vx, vy, vz] (m/s)
+    yaw: float = 0.0             # Heading angle around Z-axis (rad)
+    active: bool = True          # False if battery depleted / crashed (triggers swarm self-healing)
+    comm_radius: float = 9.0     # Peer-to-peer radio communication range (m)
+    target: np.ndarray = field(default_factory=lambda: np.zeros(3, dtype=np.float64))
+
+
+@dataclass
+class CoverageGrid:
+    """
+    2D discretized ground map tracking:
+      1. Individual coverage (`drone_sole_visited`): cells actually seen by each drone's camera.
+      2. Decentralized belief (`drone_belief_uncertainty`): each drone's local estimate of
+         unexplored areas, updated via its own camera and peer-to-peer map sharing.
+      3. Static 3D obstacle mask (`free_cells`): excludes cells inside buildings/walls.
+    """
+
+    num_drones: int
+    size: float = 16.0           # Square arena side length in meters (-size/2 to +size/2)
+    resolution: int = 45         # Grid cells per axis (total cells = resolution^2)
+
+    def __post_init__(self):
+        half = self.size / 2.0
+        step = half / self.resolution
+        coords = np.linspace(-half + step, half - step, self.resolution)
+        gx, gy = np.meshgrid(coords, coords)
+
+        # (N_cells, 2) array of [x, y] coordinates for every ground cell center
+        self.cell_centers = np.stack([gx.ravel(), gy.ravel()], axis=-1).astype(np.float64)
+        self.num_cells = len(self.cell_centers)
+
+        # Precompute 3D ground target points (z = 0.02m) once to speed up raycasting
+        self.ground_points_3d = np.column_stack(
+            [self.cell_centers, np.full(self.num_cells, 0.02, dtype=np.float64)]
+        )
+
+        # Boolean mask of cells physically visited by each individual drone
+        self.drone_sole_visited = np.zeros((self.num_drones, self.num_cells), dtype=bool)
+
+        # Uncertainty map per drone: 1.0 = completely unexplored, 0.05 = thoroughly scanned
+        self.drone_belief_uncertainty = np.ones((self.num_drones, self.num_cells), dtype=np.float32)
+
+        # Mask of traversable ground cells (False where 3D buildings sit)
+        self.free_cells = np.ones(self.num_cells, dtype=bool)
+        self.obstacle_centers = np.empty((0, 2), dtype=np.float64)
+
+    def mark_obstacles(self, model: mujoco.MjModel, data: mujoco.MjData) -> None:
+        """Casts vertical rays from above the arena to detect static 3D obstacles."""
+        ray_origin = np.array([0.0, 0.0, 10.0], dtype=np.float64)
+        ray_dir = np.array([0.0, 0.0, -1.0], dtype=np.float64)
+        geom_id_out = np.zeros(1, dtype=np.int32)
+
+        for idx, (cx, cy) in enumerate(self.cell_centers):
+            ray_origin[0], ray_origin[1] = cx, cy
+            hit_dist = mujoco.mj_ray(model, data, ray_origin, ray_dir, None, 1, -1, geom_id_out)
+            # Floor is at z=0 (hit_dist = 10.0m). Anything hit earlier (z > 0.2m) is an obstacle.
+            if 0.0 < hit_dist < 9.8:
+                self.free_cells[idx] = False
+                self.drone_belief_uncertainty[:, idx] = 0.0
+
+        # Cache obstacle coordinates and free cell count for fast algorithm queries
+        self.obstacle_centers = self.cell_centers[~self.free_cells]
+        self.total_free_cells = max(1, int(np.sum(self.free_cells)))
+
+    def update_from_cameras(
+        self,
+        drones: List[DroneState],
+        drone_body_ids: List[int],
+        cam_spec: CameraSpec,
+        model: mujoco.MjModel,
+        data: mujoco.MjData,
+        decay_rate: float = 0.25,
+    ) -> None:
+        """
+        Projects each active drone's camera frustum onto the ground, checks 3D line-of-sight
+        occlusion using MuJoCo raycasting, and fuses maps between nearby neighbors.
+        """
+        tan_y = np.tan(np.deg2rad(cam_spec.fovy * 0.5))
+        tan_x = tan_y * cam_spec.aspect
+        half_baseline = cam_spec.baseline * 0.5
+        geom_id_out = np.zeros(1, dtype=np.int32)
+
+        # --- Step 1: Individual Camera Sensing + 3D Occlusion Check ---
+        for d in drones:
+            if not d.active:
+                continue
+
+            # Vectorized relative geometry from drone to all ground cells
+            rel_xy = self.cell_centers - d.pos[:2]
+            height = max(float(d.pos[2]), 0.2)
+            dists_3d = np.sqrt(np.einsum("ij,ij->i", rel_xy, rel_xy) + height * height)
+
+            # Rotate ground offsets into the drone's local yaw coordinate frame
+            cos_y, sin_y = np.cos(-d.yaw), np.sin(-d.yaw)
+            local_x = cos_y * rel_xy[:, 0] - sin_y * rel_xy[:, 1]
+            local_y = sin_y * rel_xy[:, 0] + cos_y * rel_xy[:, 1]
+
+            # Check camera frustum limits (mono = 1 frustum, stereo = overlapping L/R frustums)
+            max_x, max_y = height * tan_x, height * tan_y
+            within_range = (
+                (np.abs(local_y) <= max_y)
+                & (dists_3d <= cam_spec.max_depth)
+                & (dists_3d >= cam_spec.min_depth)
+                & self.free_cells
+            )
+
+            if cam_spec.sensor_type == "mono":
+                in_frustum = within_range & (np.abs(local_x) <= max_x)
+            else:
+                in_left = np.abs(local_x + half_baseline) <= max_x
+                in_right = np.abs(local_x - half_baseline) <= max_x
+                in_frustum = within_range & in_left & in_right
+
+            candidate_indices = np.where(in_frustum)[0]
+            if len(candidate_indices) == 0:
+                continue
+
+            # Compute normalized ray directions from camera lens to candidate ground cells
+            cam_origin = np.array([d.pos[0], d.pos[1], d.pos[2] - 0.08], dtype=np.float64)
+            ray_vecs = self.ground_points_3d[candidate_indices] - cam_origin
+            ray_lengths = np.linalg.norm(ray_vecs, axis=1)
+            ray_dirs = ray_vecs / ray_lengths[:, None]
+
+            # Batch raycast in C if `mj_multiRay` is available; otherwise fallback to loop
+            body_id = drone_body_ids[d.id]
+            n_rays = len(candidate_indices)
+            if hasattr(mujoco, "mj_multiRay"):
+                hit_dists = np.empty(n_rays, dtype=np.float64)
+                hit_geomids = np.empty(n_rays, dtype=np.int32)
+                mujoco.mj_multiRay(
+                    model,
+                    data,
+                    cam_origin,
+                    ray_dirs.ravel(),
+                    None,
+                    1,
+                    body_id,
+                    hit_geomids,
+                    hit_dists,
+                    None,
+                    n_rays,
+                    cam_spec.max_depth + 1.0,
+                )
+                unoccluded = (hit_dists < 0.0) | (hit_dists >= (ray_lengths - 0.15))
+            else:
+                unoccluded = np.zeros(n_rays, dtype=bool)
+                for k in range(n_rays):
+                    hd = mujoco.mj_ray(model, data, cam_origin, ray_dirs[k], None, 1, body_id, geom_id_out)
+                    unoccluded[k] = (hd < 0.0) or (hd >= (ray_lengths[k] - 0.15))
+
+            visible_cells = candidate_indices[unoccluded]
+            if len(visible_cells) > 0:
+                self.drone_sole_visited[d.id, visible_cells] = True
+                self.drone_belief_uncertainty[d.id, visible_cells] = np.maximum(
+                    0.05, self.drone_belief_uncertainty[d.id, visible_cells] * (1.0 - decay_rate)
+                )
+
+        # --- Step 2: Decentralized Peer-to-Peer Map Merging ---
+        # Active drones within `comm_radius` share their uncertainty maps so peers
+        # do not re-explore regions already covered by teammates.
+        active_ids = [d.id for d in drones if d.active]
+        if len(active_ids) > 1:
+            positions = np.array([drones[i].pos for i in active_ids])
+            for idx_a in range(len(active_ids)):
+                i = active_ids[idx_a]
+                dists = np.linalg.norm(positions[idx_a + 1 :] - positions[idx_a], axis=1)
+                for offset, dist in enumerate(dists):
+                    j = active_ids[idx_a + 1 + offset]
+                    if dist <= drones[i].comm_radius:
+                        merged = np.minimum(
+                            self.drone_belief_uncertainty[i],
+                            self.drone_belief_uncertainty[j],
+                        )
+                        self.drone_belief_uncertainty[i] = merged
+                        self.drone_belief_uncertainty[j] = merged.copy()
+
+    def get_drone_coverage_pct(self, drone_id: int) -> float:
+        """Percentage of traversable area scanned by a single drone."""
+        covered = np.sum(self.drone_sole_visited[drone_id] & self.free_cells)
+        return float(covered) / self.total_free_cells * 100.0
+
+    @property
+    def combined_visited_map(self) -> np.ndarray:
+        """Boolean union of all individual drone coverage maps."""
+        return np.any(self.drone_sole_visited, axis=0)
+
+    @property
+    def combined_coverage_pct(self) -> float:
+        """Total percentage of traversable area covered by the entire swarm."""
+        covered = np.sum(self.combined_visited_map & self.free_cells)
+        return float(covered) / self.total_free_cells * 100.0
 
 
 # =====================================================================
-# 2. SWAPPABLE COVERAGE ALGORITHMS (VORONOI & FRONTIER)
+# 2. SWAPPABLE COVERAGE ALGORITHMS (PLUGIN REGISTRY)
 # =====================================================================
 
 AlgorithmFunc = Callable[[DroneState, List[DroneState], CoverageGrid], np.ndarray]
@@ -214,7 +250,15 @@ ALGORITHMS: Dict[str, AlgorithmFunc] = {}
 
 
 def register_algorithm(name: str):
-    def decorator(func: AlgorithmFunc):
+    """
+    Decorator to register any coverage planning function by CLI name.
+
+    Signature required for any registered algorithm:
+        def my_algo(ego: DroneState, neighbors: List[DroneState], grid: CoverageGrid) -> np.ndarray
+    Returns a 3D target coordinate `[target_x, target_y, target_z]`.
+    """
+
+    def decorator(func: AlgorithmFunc) -> AlgorithmFunc:
         ALGORITHMS[name] = func
         return func
 
@@ -224,24 +268,24 @@ def register_algorithm(name: str):
 def apply_obstacle_clearance(
     target_xy: np.ndarray, grid: CoverageGrid, clearance: float = 1.3
 ) -> np.ndarray:
-    """Pushes a 2D target point away from any 3D building/obstacle footprint."""
-    obstacle_pts = grid.cell_centers[~grid.free_cells]
-    if len(obstacle_pts) == 0:
-        return target_xy
+    """
+    Shared helper: pushes a 2D target waypoint away from 3D building footprints
+    and clamps it safely inside the arena boundary walls.
+    """
+    if len(grid.obstacle_centers) > 0:
+        obs_vecs = target_xy - grid.obstacle_centers
+        obs_dists = np.linalg.norm(obs_vecs, axis=1)
+        close_mask = obs_dists < clearance
 
-    obs_vecs = target_xy - obstacle_pts
-    obs_dists = np.linalg.norm(obs_vecs, axis=1)
-    close_mask = obs_dists < clearance
+        if np.any(close_mask):
+            weights = (clearance - obs_dists[close_mask]) / (obs_dists[close_mask] + 1e-3)
+            push = np.sum(obs_vecs[close_mask] * weights[:, None], axis=0)
+            norm_push = np.linalg.norm(push)
+            if norm_push > 1e-4:
+                target_xy = target_xy + (push / norm_push) * 0.65
 
-    if np.any(close_mask):
-        weights = (clearance - obs_dists[close_mask]) / (obs_dists[close_mask] + 1e-3)
-        push = np.sum(obs_vecs[close_mask] * weights[:, None], axis=0)
-        norm_push = np.linalg.norm(push)
-        if norm_push > 1e-4:
-            target_xy = target_xy + (push / norm_push) * 0.65
-
-    half = (grid.size / 2.0) - 0.8
-    return np.clip(target_xy, -half, half)
+    half_limit = (grid.size * 0.5) - 0.8
+    return np.clip(target_xy, -half_limit, half_limit)
 
 
 @register_algorithm("voronoi")
@@ -249,51 +293,43 @@ def voronoi_coverage(
     ego: DroneState, neighbors: List[DroneState], grid: CoverageGrid
 ) -> np.ndarray:
     """
-    Decentralized Dynamic Voronoi Partitioning + Hybrid Centroid/Sweep:
-    1. Partition: Claims all free grid cells closer to `ego` than to any ACTIVE neighbor.
-       (When a drone fails, `nb.active` is False, so survivors automatically absorb its cells.)
-    2. Hybrid Target: Blends the uncertainty-weighted Voronoi centroid (global balance) with the
-       highest-utility unvisited cell inside the Voronoi region (prevents getting stuck in the middle
-       between two equal piles of unvisited cells).
+    Algorithm 1: Decentralized Dynamic Voronoi Partitioning + Active Sweep
+    -----------------------------------------------------------------------
+    - Territory Split: Each drone claims all free cells closer to itself than
+      to any active neighbor. If a drone fails (`nb.active == False`), its
+      neighbors automatically absorb its territory on the next step.
+    - Target Selection: Blends the uncertainty-weighted Voronoi centroid (30%)
+      with the highest-priority unvisited cell inside its Voronoi zone (70%)
+      so the drone continuously sweeps corners rather than hovering in place.
     """
     pts = grid.cell_centers
     unc = grid.drone_belief_uncertainty[ego.id]
 
-    # --- 1. Construct Ego Drone's Voronoi Cell ---
+    # 1. Compute ego's Voronoi cell against active neighbors
     ego_dists = np.linalg.norm(pts - ego.pos[:2], axis=1)
     in_ego_cell = grid.free_cells.copy()
-
     for nb in neighbors:
-        if not nb.active or nb.id == ego.id:
-            continue
-        nb_dists = np.linalg.norm(pts - nb.pos[:2], axis=1)
-        in_ego_cell &= ego_dists <= nb_dists
+        if nb.active and nb.id != ego.id:
+            nb_dists = np.linalg.norm(pts - nb.pos[:2], axis=1)
+            in_ego_cell &= ego_dists <= nb_dists
 
-    # Fallback if cell is empty
     if not np.any(in_ego_cell):
         in_ego_cell = grid.free_cells.copy()
 
-    cell_indices = np.where(in_ego_cell)[0]
-    cell_pts = pts[cell_indices]
-    cell_unc = unc[cell_indices]
-    cell_dists = ego_dists[cell_indices]
+    cell_pts = pts[in_ego_cell]
+    cell_unc = unc[in_ego_cell]
+    cell_dists = ego_dists[in_ego_cell]
 
-    # --- 2. Compute Uncertainty-Weighted Voronoi Centroid (Lloyd's step) ---
-    weights = (cell_unc**3) + 1e-5
-    voronoi_centroid = np.average(cell_pts, axis=0, weights=weights)
+    # 2. Uncertainty-weighted centroid (Lloyd's step)
+    centroid_xy = np.average(cell_pts, axis=0, weights=(cell_unc**3) + 1e-5)
 
-    # --- 3. Select Local Sweep Waypoint Inside Voronoi Cell ---
-    # Prefer unvisited cells (high uncertainty) that are reasonably close and aligned with current target
-    dist_to_curr_tgt = np.linalg.norm(cell_pts - ego.target[:2], axis=1)
-    hysteresis_bonus = 0.35 * np.exp(-dist_to_curr_tgt / 1.5)
+    # 3. Local greedy sweep point with momentum hysteresis
+    dist_to_curr = np.linalg.norm(cell_pts - ego.target[:2], axis=1)
+    hysteresis = 0.35 * np.exp(-dist_to_curr / 1.5)
+    sweep_scores = (cell_unc**2) / (0.35 * cell_dists + 1.0) + hysteresis
+    sweep_xy = cell_pts[int(np.argmax(sweep_scores))]
 
-    sweep_scores = (cell_unc**2) / (0.35 * cell_dists + 1.0) + hysteresis_bonus
-    best_sweep_pt = cell_pts[int(np.argmax(sweep_scores))]
-
-    # Blend 30% Voronoi Centroid + 70% Active Sweep Point so it sweeps every corner of its territory
-    target_xy = 0.30 * voronoi_centroid + 0.70 * best_sweep_pt
-    target_xy = apply_obstacle_clearance(target_xy, grid)
-
+    target_xy = apply_obstacle_clearance(0.30 * centroid_xy + 0.70 * sweep_xy, grid)
     return np.array([float(target_xy[0]), float(target_xy[1]), 2.4], dtype=np.float64)
 
 
@@ -302,78 +338,113 @@ def frontier_coverage(
     ego: DroneState, neighbors: List[DroneState], grid: CoverageGrid
 ) -> np.ndarray:
     """
-    Decentralized Cooperative Frontier Exploration (Information Gain vs. Cost + Peer Deconfliction):
-    1. Identifies boundary ('frontier') cells between covered space and uncovered space.
-    2. Evaluates expected camera footprint Information Gain around each frontier candidate.
-    3. Subtracts travel distance cost and applies a strong repulsive penalty around active neighbors'
-       positions and declared targets so drones spread out across distinct frontiers.
+    Algorithm 2: Cooperative Information-Gain Frontier Exploration
+    --------------------------------------------------------------
+    - Evaluates candidate unvisited cells by summing expected camera information
+      gain within a 2.0m radius.
+    - Penalizes candidates that are closer to a neighbor or near a neighbor's
+      current target waypoint so drones naturally spread across distinct regions.
     """
     pts = grid.cell_centers
     unc = grid.drone_belief_uncertainty[ego.id]
     free = grid.free_cells
 
-    # --- 1. Identify Frontier / Unvisited Candidate Cells ---
     unvisited_mask = (unc > 0.25) & free
     if not np.any(unvisited_mask):
-        # All cells visited -> patrol cells with highest residual uncertainty
         unvisited_mask = free.copy()
 
     cand_indices = np.where(unvisited_mask)[0]
-    # Subsample up to 80 top uncertain candidates for fast real-time evaluation
     if len(cand_indices) > 80:
-        top_order = np.argsort(unc[cand_indices])[-80:]
-        cand_indices = cand_indices[top_order]
+        cand_indices = cand_indices[np.argsort(unc[cand_indices])[-80:]]
 
     cand_pts = pts[cand_indices]
-
-    # --- 2. Compute Information Gain (sum of uncertainty within camera radius ~2.0m) ---
-    # Pairwise distance matrix between candidates (M, 2) and all free cells (N, 2)
     free_pts = pts[free]
     free_unc = unc[free]
-    diff_matrix = cand_pts[:, None, :] - free_pts[None, :, :]
-    dist_matrix = np.linalg.norm(diff_matrix, axis=2)
+
+    # Expected camera footprint information gain around each candidate
+    dist_matrix = np.linalg.norm(cand_pts[:, None, :] - free_pts[None, :, :], axis=2)
     info_gain = np.sum((dist_matrix <= 2.0) * free_unc[None, :], axis=1)
 
-    # --- 3. Compute Travel Cost & Momentum ---
     ego_dists = np.linalg.norm(cand_pts - ego.pos[:2], axis=1)
-    dist_to_curr_tgt = np.linalg.norm(cand_pts - ego.target[:2], axis=1)
-    momentum_bonus = 2.0 * np.exp(-dist_to_curr_tgt / 1.5)
+    momentum = 2.0 * np.exp(-np.linalg.norm(cand_pts - ego.target[:2], axis=1) / 1.5)
 
-    # --- 4. Decentralized Neighbor Deconfliction ---
+    # Repel from active neighbors' positions and declared targets
     peer_penalty = np.zeros(len(cand_pts), dtype=np.float64)
     for nb in neighbors:
         if not nb.active or nb.id == ego.id:
             continue
         d_nb_pos = np.linalg.norm(cand_pts - nb.pos[:2], axis=1)
         d_nb_tgt = np.linalg.norm(cand_pts - nb.target[:2], axis=1)
-
-        # Penalize candidates that are closer to a neighbor than to ego
         peer_penalty += np.where(d_nb_pos < ego_dists, 6.0, 0.0)
-        # Strong Gaussian repulsion around neighbor's current target
         peer_penalty += 12.0 * np.exp(-(d_nb_tgt**2) / 5.0)
 
-    # --- 5. Maximize Total Frontier Utility ---
-    utility = (1.5 * info_gain) - (0.85 * ego_dists) + momentum_bonus - peer_penalty
-    best_xy = cand_pts[int(np.argmax(utility))]
-    best_xy = apply_obstacle_clearance(best_xy, grid)
-
+    utility = (1.5 * info_gain) - (0.85 * ego_dists) + momentum - peer_penalty
+    best_xy = apply_obstacle_clearance(cand_pts[int(np.argmax(utility))], grid)
     return np.array([float(best_xy[0]), float(best_xy[1]), 2.4], dtype=np.float64)
 
 
+@register_algorithm("spiral_inward")
+def spiral_inward_coverage(
+    ego: DroneState, neighbors: List[DroneState], grid: CoverageGrid
+) -> np.ndarray:
+    """
+    Algorithm 3: Decentralized Outside-to-Inside Concentric Ring Sweep
+    ------------------------------------------------------------------
+    - Drones form an evenly spaced ring around the outer perimeter and spiral
+      gradually inward toward the center as outer rings get explored.
+    - Self-healing: Phase angles around the circle are computed dynamically from
+      the sorted list of ACTIVE peer IDs, so if a drone drops out, the remaining
+      drones automatically re-space to close the angular gap.
+    """
+    pts = grid.cell_centers
+    unc = grid.drone_belief_uncertainty[ego.id]
+    free = grid.free_cells
+
+    # 1. Determine active swarm size and ego's angular slot (self-healing ring)
+    active_ids = sorted([ego.id] + [nb.id for nb in neighbors if nb.active])
+    n_active = len(active_ids)
+    my_slot = active_ids.index(ego.id)
+
+    # 2. Find the outermost unexplored radius across the arena
+    radii = np.linalg.norm(pts, axis=1)
+    unvisited_mask = (unc > 0.25) & free
+    if np.any(unvisited_mask):
+        # Target the 90th percentile radius of remaining unexplored cells (outside -> inside)
+        target_radius = float(np.percentile(radii[unvisited_mask], 90))
+    else:
+        # Once 100% visited, patrol mid-ring
+        target_radius = grid.size * 0.25
+
+    # 3. Advance a continuous angular sweep based on arena uncertainty progress
+    # As overall mean uncertainty drops from 1.0 -> 0.05, the swarm completes ~3 full rotations
+    mean_unc = float(np.mean(unc[free]))
+    sweep_progress_angle = (1.0 - mean_unc) * (6.0 * np.pi)
+    desired_angle = sweep_progress_angle + (2.0 * np.pi * my_slot / n_active)
+
+    # Ideal point on the shrinking spiral
+    ideal_xy = np.array(
+        [target_radius * np.cos(desired_angle), target_radius * np.sin(desired_angle)],
+        dtype=np.float64,
+    )
+
+    # Snap to the highest-uncertainty free grid cell near the ideal spiral point
+    dist_to_ideal = np.linalg.norm(pts[free] - ideal_xy, axis=1)
+    score = (unc[free] * 2.5) - (0.6 * dist_to_ideal)
+    chosen_xy = apply_obstacle_clearance(pts[free][int(np.argmax(score))], grid)
+
+    return np.array([float(chosen_xy[0]), float(chosen_xy[1]), 2.4], dtype=np.float64)
+
+
 # =====================================================================
-# 3. 3D SCENARIO & CAMERA XML BUILDER
+# 3. 3D SCENARIO & MUJOCO XML SCENE BUILDER
 # =====================================================================
 
 
 def build_scenario_obstacles_xml(
     scenario: str, custom_mesh_path: Optional[str] = None
-) -> tuple[str, str]:
-    """Returns (assets_xml, worldbody_obstacles_xml) for different 3D environments."""
-    assets = ""
-    obstacles = ""
-
+) -> Tuple[str, str]:
+    """Returns `(assets_xml, worldbody_obstacles_xml)` for the selected 3D environment."""
     if scenario == "urban":
-        # 3D Urban Canyon: Buildings, pillars, and walls that cast sensor occlusions
         obstacles = """
         <geom name="bldg_1" type="box" pos="-3.5 3.0 1.4" size="1.4 1.4 1.4" rgba="0.35 0.38 0.45 1"/>
         <geom name="bldg_2" type="box" pos="3.5 -3.0 1.6" size="1.5 1.2 1.6" rgba="0.35 0.38 0.45 1"/>
@@ -381,8 +452,9 @@ def build_scenario_obstacles_xml(
         <geom name="bldg_4" type="box" pos="-3.8 -3.5 1.5" size="1.1 1.6 1.5" rgba="0.35 0.42 0.4 1"/>
         <geom name="central_monument" type="cylinder" pos="0 0 1.1" size="0.9 1.1" rgba="0.45 0.45 0.5 1"/>
         """
-    elif scenario == "ruins":
-        # Disaster / Collapsed Structure Scenario: Uneven debris + tilted slabs + pillars
+        return "", obstacles
+
+    if scenario == "ruins":
         obstacles = """
         <geom name="wall_1" type="box" pos="-2.5 0.0 0.9" size="0.3 3.2 0.9" rgba="0.5 0.42 0.35 1"/>
         <geom name="wall_2" type="box" pos="2.5 1.5 0.8" size="2.2 0.3 0.8" rgba="0.5 0.42 0.35 1"/>
@@ -390,18 +462,14 @@ def build_scenario_obstacles_xml(
         <geom name="pillar_1" type="cylinder" pos="-4.5 4.0 1.5" size="0.6 1.5" rgba="0.55 0.5 0.45 1"/>
         <geom name="pillar_2" type="cylinder" pos="4.5 -4.0 1.3" size="0.7 1.3" rgba="0.55 0.5 0.45 1"/>
         """
-    elif (
-        scenario == "custom_mesh"
-        and custom_mesh_path
-        and os.path.exists(custom_mesh_path)
-    ):
-        # Load any external .stl or .obj 3D environment mesh
-        assets = (
-            f'<mesh name="custom_env_mesh" file="{custom_mesh_path}" scale="1 1 1"/>'
-        )
-        obstacles = '<geom name="custom_3d_map" type="mesh" mesh="custom_env_mesh" pos="0 0 0" rgba="0.5 0.5 0.55 1"/>'
+        return "", obstacles
 
-    return assets, obstacles
+    if scenario == "custom_mesh" and custom_mesh_path and os.path.exists(custom_mesh_path):
+        assets = f'<mesh name="custom_env_mesh" file="{custom_mesh_path}" scale="1 1 1"/>'
+        obstacles = '<geom name="custom_3d_map" type="mesh" mesh="custom_env_mesh" pos="0 0 0" rgba="0.5 0.5 0.55 1"/>'
+        return assets, obstacles
+
+    return "", ""
 
 
 def build_swarm_xml(
@@ -411,12 +479,13 @@ def build_swarm_xml(
     custom_mesh_path: Optional[str] = None,
     arena_size: float = 16.0,
 ) -> str:
-    half = arena_size / 2.0
+    """Constructs the complete MuJoCo MJCF XML model with drones, cameras, and 3D obstacles."""
+    half = arena_size * 0.5
     assets_xml, obstacles_xml = build_scenario_obstacles_xml(scenario, custom_mesh_path)
 
     drone_bodies = []
     actuators = []
-    colors = [
+    palette = [
         "0.2 0.85 0.35 1",
         "0.2 0.65 1.0 1",
         "1.0 0.6 0.15 1",
@@ -426,18 +495,17 @@ def build_swarm_xml(
     ]
 
     for i in range(num_drones):
-        angle = 2 * np.pi * i / num_drones
-        sx, sy = 5.5 * np.cos(angle), 5.5 * np.sin(angle)
-        color = colors[i % len(colors)]
+        angle = 2.0 * np.pi * i / num_drones
+        sx, sy = 6.2 * np.cos(angle), 6.2 * np.sin(angle)
+        color = palette[i % len(palette)]
 
-        # Mount either a single Monocular camera or a Stereo camera pair on the drone body
         if cam_spec.sensor_type == "mono":
             cameras_xml = f"""
             <camera name="cam_mono_{i}" pos="0 0 -0.06" euler="0 0 0" fovy="{cam_spec.fovy}"/>
             <geom name="lens_mono_{i}" type="cylinder" pos="0 0 -0.05" size="0.04 0.02" rgba="0.1 0.1 0.1 1"/>
             """
         else:
-            hb = cam_spec.baseline / 2.0
+            hb = cam_spec.baseline * 0.5
             cameras_xml = f"""
             <camera name="cam_left_{i}" pos="{-hb:.3f} 0 -0.06" euler="0 0 0" fovy="{cam_spec.fovy}"/>
             <camera name="cam_right_{i}" pos="{hb:.3f} 0 -0.06" euler="0 0 0" fovy="{cam_spec.fovy}"/>
@@ -470,14 +538,14 @@ def build_swarm_xml(
     <mujoco model="drone_swarm_3d_coverage">
         <option timestep="0.01" gravity="0 0 -9.81" integrator="RK4"/>
         <asset>
-            <texture name="grid_tex" type="2d" builtin="checker" width="512" height="512" rgb1="0.18 0.20 0.24" rgb2="0.23 0.26 0.30"/>
+            <texture name="grid_tex" type="2d" builtin="checker" width="512" height="512"
+                     rgb1="0.18 0.20 0.24" rgb2="0.23 0.26 0.30"/>
             <material name="floor_mat" texture="grid_tex" texrepeat="8 8" reflectance="0.1"/>
             {assets_xml}
         </asset>
         <worldbody>
             <light pos="0 0 18" dir="0 0 -1" directional="true" diffuse="0.8 0.8 0.8"/>
             <geom name="floor" type="plane" size="{half} {half} 0.1" material="floor_mat"/>
-            <!-- Boundary Walls -->
             <geom type="box" pos="0 {half} 0.6" size="{half} 0.1 0.6" rgba="0.4 0.4 0.4 0.4"/>
             <geom type="box" pos="0 {-half} 0.6" size="{half} 0.1 0.6" rgba="0.4 0.4 0.4 0.4"/>
             <geom type="box" pos="{half} 0 0.6" size="0.1 {half} 0.6" rgba="0.4 0.4 0.4 0.4"/>
@@ -493,7 +561,7 @@ def build_swarm_xml(
 
 
 # =====================================================================
-# 4. EXPORTING INDIVIDUAL & COMBINED COVERAGE MAPS + CAMERA FEEDS
+# 4. REPORTING: COVERAGE COMPARISON PLOTS & ONBOARD CAMERA SNAPSHOTS
 # =====================================================================
 
 
@@ -503,12 +571,10 @@ def save_coverage_and_camera_reports(
     cam_spec: CameraSpec,
     model: mujoco.MjModel,
     data: mujoco.MjData,
-):
-    """
-    1. Saves an image showing each drone's individual covered area + the merged global area.
-    2. Renders and saves actual onboard Monocular or Stereo RGB+Depth camera views from Drone 0.
-    """
+) -> None:
+    """Exports individual/combined coverage maps and onboard camera images."""
     res = grid.resolution
+    half = grid.size * 0.5
     obstacle_mask_2d = (~grid.free_cells).reshape(res, res)
 
     try:
@@ -518,38 +584,26 @@ def save_coverage_and_camera_reports(
         import matplotlib.pyplot as plt
 
         num_d = len(drones)
-        fig, axes = plt.subplots(
-            1, num_d + 1, figsize=(3.6 * (num_d + 1), 3.8), dpi=140
-        )
+        fig, axes = plt.subplots(1, num_d + 1, figsize=(3.6 * (num_d + 1), 3.8), dpi=140)
 
-        # Plot each drone's individual coverage map
         for i in range(num_d):
             ax = axes[i]
             cov_2d = grid.drone_sole_visited[i].reshape(res, res).astype(float)
-            cov_2d[obstacle_mask_2d] = -0.5  # Gray/dark for 3D obstacles
+            cov_2d[obstacle_mask_2d] = -0.5
             ax.imshow(
                 cov_2d,
                 cmap="viridis",
                 vmin=-0.5,
                 vmax=1.0,
                 origin="lower",
-                extent=[-8, 8, -8, 8],
+                extent=[-half, half, -half, half],
             )
-            ax.plot(
-                drones[i].pos[0],
-                drones[i].pos[1],
-                "ro",
-                markersize=7,
-                label="Final Pos",
-            )
-            ax.set_title(
-                f"Drone {i} Only\n({grid.get_drone_coverage_pct(i):.1f}% covered)"
-            )
+            ax.plot(drones[i].pos[0], drones[i].pos[1], "ro", markersize=7)
+            ax.set_title(f"Drone {i} Only\n({grid.get_drone_coverage_pct(i):.1f}% covered)")
             ax.set_xlabel("X (m)")
             if i == 0:
                 ax.set_ylabel("Y (m)")
 
-        # Plot Combined / Merged Swarm Map
         ax_comb = axes[-1]
         comb_2d = grid.combined_visited_map.reshape(res, res).astype(float)
         comb_2d[obstacle_mask_2d] = -0.5
@@ -559,7 +613,7 @@ def save_coverage_and_camera_reports(
             vmin=-0.5,
             vmax=1.0,
             origin="lower",
-            extent=[-8, 8, -8, 8],
+            extent=[-half, half, -half, half],
         )
         for d in drones:
             ax_comb.plot(d.pos[0], d.pos[1], "wo", markersize=6)
@@ -569,34 +623,27 @@ def save_coverage_and_camera_reports(
         plt.tight_layout()
         plt.savefig("coverage_maps_comparison.png")
         plt.close(fig)
-        print(
-            "-> Saved individual + combined coverage maps to 'coverage_maps_comparison.png'"
-        )
+        print("-> Saved individual + combined coverage maps to 'coverage_maps_comparison.png'")
     except ImportError:
         print("-> (Install matplotlib to generate 'coverage_maps_comparison.png')")
 
-    # Render onboard camera views from Drone 0
     renderer = mujoco.Renderer(model, height=320, width=420)
     if cam_spec.sensor_type == "mono":
         renderer.update_scene(data, camera="cam_mono_0")
-        rgb = renderer.render()
-        iio.imwrite("drone0_mono_camera.png", rgb)
+        iio.imwrite("drone0_mono_camera.png", renderer.render())
         print("-> Saved Drone 0 monocular camera frame to 'drone0_mono_camera.png'")
     else:
         renderer.update_scene(data, camera="cam_left_0")
         left_rgb = renderer.render()
         renderer.update_scene(data, camera="cam_right_0")
         right_rgb = renderer.render()
-        stereo_pair = np.concatenate([left_rgb, right_rgb], axis=1)
-        iio.imwrite("drone0_stereo_pair.png", stereo_pair)
-        print(
-            "-> Saved Drone 0 left+right stereo camera pair to 'drone0_stereo_pair.png'"
-        )
+        iio.imwrite("drone0_stereo_pair.png", np.concatenate([left_rgb, right_rgb], axis=1))
+        print("-> Saved Drone 0 left+right stereo camera pair to 'drone0_stereo_pair.png'")
     renderer.close()
 
 
 # =====================================================================
-# 5. MAIN SIMULATION LOOP
+# 5. MAIN SIMULATION LOOP & CONTROLLER
 # =====================================================================
 
 
@@ -608,7 +655,7 @@ def run_simulation(
     custom_mesh: Optional[str],
     num_drones: int,
     max_steps: int,
-):
+) -> None:
     cam_spec = CameraSpec(sensor_type=sensor_type)
     algo_fn = ALGORITHMS[algo_name]
 
@@ -619,11 +666,27 @@ def run_simulation(
     data = mujoco.MjData(model)
     mujoco.mj_forward(model, data)
 
+    # Pre-cache MuJoCo body & geom IDs once (avoids slow string lookups in the physics loop)
+    drone_body_ids = [
+        mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, f"drone_{i}")
+        for i in range(num_drones)
+    ]
+    drone_core_geom_ids = [
+        mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, f"core_{i}")
+        for i in range(num_drones)
+    ]
+
     grid = CoverageGrid(num_drones=num_drones, size=16.0, resolution=45)
     grid.mark_obstacles(model, data)
 
     drones = [
-        DroneState(id=i, pos=np.zeros(3), vel=np.zeros(3)) for i in range(num_drones)
+        DroneState(
+            id=i,
+            pos=data.qpos[i * 7 : i * 7 + 3].copy(),
+            vel=np.zeros(3, dtype=np.float64),
+            target=data.qpos[i * 7 : i * 7 + 3].copy(),
+        )
+        for i in range(num_drones)
     ]
 
     print(
@@ -631,66 +694,67 @@ def run_simulation(
         f"Sensor: {sensor_type.upper()} | Scenario: {scenario.upper()} ==="
     )
 
-    def step_simulation(step_idx: int):
+    # PD flight controller gains and quadrotor mass (kg)
+    kp, kd, mass = 6.0, 4.5, 1.2
+    gravity_force = mass * 9.81
+
+    def step_simulation(step_idx: int) -> None:
+        # 1. Sync drone state from MuJoCo & stabilize attitude (upright hover)
         for i, d in enumerate(drones):
             qpos_adr, qvel_adr = i * 7, i * 6
-            d.pos = data.qpos[qpos_adr : qpos_adr + 3].copy()
-            d.vel = data.qvel[qvel_adr : qvel_adr + 3].copy()
-            data.qpos[qpos_adr + 3 : qpos_adr + 7] = [1.0, 0.0, 0.0, 0.0]
-            data.qvel[qvel_adr + 3 : qvel_adr + 6] = [0.0, 0.0, 0.0]
+            d.pos[:] = data.qpos[qpos_adr : qpos_adr + 3]
+            d.vel[:] = data.qvel[qvel_adr : qvel_adr + 3]
+            data.qpos[qpos_adr + 3 : qpos_adr + 7] = (1.0, 0.0, 0.0, 0.0)
+            data.qvel[qvel_adr + 3 : qvel_adr + 6] = (0.0, 0.0, 0.0)
 
-        # Simulate Drone 0 failure at step 500 to test self-healing redistribution
+        # 2. Inject dynamic failure event at step 500 to verify swarm self-healing
         if step_idx == 500 and len(drones) > 1:
             drones[0].active = False
-            geom_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "core_0")
-            model.geom_rgba[geom_id] = [0.8, 0.1, 0.1, 0.4]
-            print(
-                f"\n[EVENT @ Step {step_idx}] Drone 0 FAILED! Neighboring drones adapting coverage..."
-            )
+            model.geom_rgba[drone_core_geom_ids[0]] = [0.8, 0.1, 0.1, 0.4]
+            print(f"\n[EVENT @ Step {step_idx}] Drone 0 FAILED! Surviving drones redistributing area...")
 
-        # Update camera coverage + P2P map sharing every 4 steps
+        # 3. Sensor update + P2P map fusion at 25 Hz (every 4 steps)
         if step_idx % 4 == 0:
-            grid.update_from_cameras(drones, cam_spec, model, data)
+            grid.update_from_cameras(drones, drone_body_ids, cam_spec, model, data)
 
-        # Replan targets every 10 steps (0.1s)
+        # 4. Decentralized target replanning at 10 Hz (every 10 steps)
         if step_idx % 10 == 0:
-            for d in drones:
+            all_positions = np.array([d.pos for d in drones])
+            for i, d in enumerate(drones):
                 if not d.active:
-                    d.target = np.array([d.pos[0], d.pos[1], 0.15], dtype=np.float64)
+                    d.target[:] = (d.pos[0], d.pos[1], 0.15)
                     continue
 
+                # Filter neighbors within radio communication range
+                dists = np.linalg.norm(all_positions - d.pos, axis=1)
                 local_neighbors = [
-                    nb
-                    for nb in drones
-                    if nb.id != d.id and np.linalg.norm(nb.pos - d.pos) <= d.comm_radius
+                    drones[j]
+                    for j in range(num_drones)
+                    if j != i and dists[j] <= d.comm_radius
                 ]
+
                 new_target = algo_fn(d, local_neighbors, grid)
                 if new_target is not None:
-                    d.target = np.asarray(new_target, dtype=np.float64)
+                    d.target[:] = new_target
                 else:
-                    d.target = np.array([d.pos[0], d.pos[1], 2.4], dtype=np.float64)
+                    d.target[:] = (d.pos[0], d.pos[1], 2.4)
 
-                data.mocap_pos[d.id] = [d.target[0], d.target[1], 0.05]
+                data.mocap_pos[i] = (d.target[0], d.target[1], 0.05)
 
-        # PD Position Controller
-        kp, kd, mass = 6.0, 4.5, 1.2
+        # 5. Low-level PD position control + gravity compensation
         for i, d in enumerate(drones):
             vel_cmd = np.clip((d.target - d.pos) * kp, -7.0, 7.0)
             acc_cmd = vel_cmd - kd * d.vel
-            data.ctrl[i * 3 : i * 3 + 3] = [
-                mass * acc_cmd[0],
-                mass * acc_cmd[1],
-                mass * (acc_cmd[2] + 9.81),
-            ]
+            ctrl_adr = i * 3
+            data.ctrl[ctrl_adr] = mass * acc_cmd[0]
+            data.ctrl[ctrl_adr + 1] = mass * acc_cmd[1]
+            data.ctrl[ctrl_adr + 2] = mass * acc_cmd[2] + gravity_force
 
         mujoco.mj_step(model, data)
 
         if step_idx % 250 == 0:
             indiv_str = " | ".join(
-                [
-                    f"D{i}:{grid.get_drone_coverage_pct(i):.0f}%"
-                    for i in range(num_drones)
-                ]
+                f"D{i}:{grid.get_drone_coverage_pct(i):.0f}%" for i in range(num_drones)
             )
             print(
                 f"Step {step_idx:04d} | Combined: {grid.combined_coverage_pct:5.1f}% | "
@@ -719,27 +783,16 @@ def run_simulation(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="3D Camera-Based Drone Swarm Coverage")
-    parser.add_argument(
-        "--algo", type=str, default="voronoi", choices=list(ALGORITHMS.keys())
-    )
-    parser.add_argument(
-        "--mode", type=str, default="headless", choices=["headless", "visual"]
-    )
-    parser.add_argument(
-        "--sensor", type=str, default="stereo", choices=["mono", "stereo"]
-    )
+    parser.add_argument("--algo", type=str, default="voronoi", choices=list(ALGORITHMS.keys()))
+    parser.add_argument("--mode", type=str, default="headless", choices=["headless", "visual"])
+    parser.add_argument("--sensor", type=str, default="stereo", choices=["mono", "stereo"])
     parser.add_argument(
         "--scenario",
         type=str,
-        default="urban",
+        default="flat",
         choices=["flat", "urban", "ruins", "custom_mesh"],
     )
-    parser.add_argument(
-        "--mesh-file",
-        type=str,
-        default=None,
-        help="Path to custom .stl or .obj mesh file",
-    )
+    parser.add_argument("--mesh-file", type=str, default=None, help="Path to custom .stl or .obj mesh")
     parser.add_argument("--drones", type=int, default=4)
     parser.add_argument("--steps", type=int, default=1200)
     args = parser.parse_args()
