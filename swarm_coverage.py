@@ -576,6 +576,91 @@ def spiral_inward_coverage(
     )
 
 
+@register_algorithm("nearest_unvisited")
+def nearest_unvisited_coverage(
+    ego: DroneState, neighbors: List[DroneState], grid: CoverageGrid
+) -> np.ndarray:
+    """
+    Baseline 1: Greedy Nearest Unvisited Cell
+    Ignores neighbors completely and simply flies to the closest unvisited cell.
+    """
+    all_cell_positions = grid.cell_centers
+    ego_uncertainty_map = grid.drone_belief_uncertainty[ego.id]
+
+    # Find all free cells that have not been visited yet
+    unvisited_mask = (ego_uncertainty_map > 0.25) & grid.free_cells
+
+    # If everything is already visited, just hover in place
+    if not np.any(unvisited_mask):
+        return np.array([float(ego.pos[0]), float(ego.pos[1]), 2.4], dtype=np.float64)
+
+    unvisited_positions = all_cell_positions[unvisited_mask]
+    distances_to_ego = np.linalg.norm(unvisited_positions - ego.pos[:2], axis=1)
+
+    # Pick the closest unvisited cell
+    closest_cell_xy = unvisited_positions[int(np.argmin(distances_to_ego))]
+    safe_target_xy = apply_obstacle_clearance(closest_cell_xy, grid)
+    # safe_target_xy = closest_cell_xy
+
+    return np.array(
+        [float(safe_target_xy[0]), float(safe_target_xy[1]), 2.4], dtype=np.float64
+    )
+
+
+@register_algorithm("lawnmower")
+def lawnmower_coverage(
+    ego: DroneState, neighbors: List[DroneState], grid: CoverageGrid
+) -> np.ndarray:
+    """
+    Baseline 2: Strip-Based Lawnmower (Boustrophedon) Sweep
+    Divides the Y-axis into horizontal bands among active drones and sweeps
+    left-to-right on even rows, right-to-left on odd rows.
+    """
+    all_cell_positions = grid.cell_centers
+    ego_uncertainty_map = grid.drone_belief_uncertainty[ego.id]
+
+    # 1. Assign each active drone a horizontal band along the Y-axis
+    active_ids = sorted([ego.id] + [nb.id for nb in neighbors if nb.active])
+    my_band_index = active_ids.index(ego.id)
+    num_bands = len(active_ids)
+
+    half_size = grid.size * 0.5
+    band_height = grid.size / num_bands
+    y_min = -half_size + (my_band_index * band_height)
+    y_max = y_min + band_height
+
+    # 2. Filter unvisited cells inside ego's horizontal band (fallback to whole map if band is done)
+    in_band_mask = (
+        (all_cell_positions[:, 1] >= y_min)
+        & (all_cell_positions[:, 1] < y_max)
+        & (ego_uncertainty_map > 0.25)
+        & grid.free_cells
+    )
+    if not np.any(in_band_mask):
+        in_band_mask = (ego_uncertainty_map > 0.25) & grid.free_cells
+    if not np.any(in_band_mask):
+        return np.array([float(ego.pos[0]), float(ego.pos[1]), 2.4], dtype=np.float64)
+
+    cand_pts = all_cell_positions[in_band_mask]
+
+    # 3. Sort cells into a snake/lawnmower order:
+    # Group by Y row (rounded to 0.5m), then alternate X direction every row
+    row_indices = np.round((cand_pts[:, 1] + half_size) / 0.8).astype(int)
+    min_row = int(np.min(row_indices))
+    row_pts = cand_pts[row_indices == min_row]
+
+    # Even rows sweep left-to-right (min X); odd rows sweep right-to-left (max X)
+    if min_row % 2 == 0:
+        next_cell_xy = row_pts[int(np.argmin(row_pts[:, 0]))]
+    else:
+        next_cell_xy = row_pts[int(np.argmax(row_pts[:, 0]))]
+
+    safe_target_xy = apply_obstacle_clearance(next_cell_xy, grid)
+    return np.array(
+        [float(safe_target_xy[0]), float(safe_target_xy[1]), 2.4], dtype=np.float64
+    )
+
+
 # =====================================================================
 # 3. LIVE VIEWER OVERLAY: RENDER ASSIGNED TERRITORY ON MUJOCO FLOOR
 # =====================================================================
