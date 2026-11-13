@@ -34,7 +34,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
     numpy \
     scipy \
     imageio[ffmpeg] \
-    matplotlib
+    matplotlib \
+    stable-baselines3 \
+    torch
 
 WORKDIR /workspace
 
