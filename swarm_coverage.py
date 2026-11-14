@@ -404,8 +404,8 @@ def voronoi_coverage(
     ]
 
     # 4. Blend global centroid pull with local sweep target and enforce obstacle clearance
-    blended_target_xy = (0.30 * weighted_voronoi_centroid) + (
-        0.70 * best_local_sweep_position
+    blended_target_xy = (0.10 * weighted_voronoi_centroid) + (
+        0.90 * best_local_sweep_position
     )
     safe_target_xy = apply_obstacle_clearance(blended_target_xy, grid)
 
