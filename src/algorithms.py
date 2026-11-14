@@ -250,3 +250,74 @@ def sector_patrol_coverage_2(
 
     best_xy = apply_obstacle_clearance(cands[int(np.argmax(score))], grid)
     return np.array([float(best_xy[0]), float(best_xy[1]), 2.4])
+
+
+@register_algorithm("patrol_clean")
+def sector_patrol_clean(
+    ego: DroneState, peers: List[DroneState], grid: CoverageGrid
+) -> np.ndarray:
+    """
+    Minimalist 4-Step Decentralized Coverage Algorithm:
+    1. Keep current target while we are still flying toward it AND it remains unvisited.
+    2. Filter unvisited free cells outside our immediate 0.8m hover radius.
+    3. Score remaining cells by proximity (-distance) + tiny directional tie-breaker.
+    4. Repel from active peers' positions so drones split the map automatically.
+    """
+    # Get [x, y] coordinates of all arena grid cell centers, shape (N_cells, 2)
+    pts = grid.cell_centers
+    # Get this drone's local belief map [1.0 = unknown, 0.05 = well-scanned], shape (N_cells,)
+    unc = grid.drone_belief_uncertainty[ego.id]
+
+    # 1. Waypoint lock: keep flying to current target if we haven't arrived yet (> 0.8m)
+    #    AND the target cell is still traversable and unvisited
+    dist_to_target = float(np.linalg.norm(ego.target[:2] - ego.pos[:2]))
+    # Find the array index of the cell center closest to ego.target[:2]
+    # axis=1 computes the Euclidean norm across [dx, dy] for each row in pts
+    nearest_cell = int(np.argmin(np.linalg.norm(pts - ego.target[:2], axis=1)))
+    if (
+        dist_to_target > 0.8
+        and grid.free_cells[nearest_cell]
+        and unc[nearest_cell] > 0.25
+    ):
+        return np.array([float(ego.target[0]), float(ego.target[1]), 2.4])
+
+    # 2. Compute 2D Euclidean distance from ego's current position to every cell in the arena
+    ego_dists_all = np.linalg.norm(pts - ego.pos[:2], axis=1)
+
+    # Bitwise AND (&) combines three boolean masks:
+    #   - cell is unvisited (unc > 0.25)
+    #   - cell is not an obstacle (grid.free_cells)
+    #   - cell is outside our immediate 0.8m hover radius (forces forward movement)
+    unvisited = (unc > 0.25) & grid.free_cells & (ego_dists_all > 0.8)
+
+    # Fallback: if no unvisited cells exist beyond 0.8m (final cleanup phase), allow closer cells
+    if not np.any(unvisited):
+        unvisited = (unc > 0.25) & grid.free_cells
+
+    # If ALL free cells are visited according to ego's belief, hover in place
+    if not np.any(unvisited):
+        return np.array([float(ego.pos[0]), float(ego.pos[1]), 2.4])
+
+    # Extract [x, y] coordinates and precomputed distances for only the unvisited candidate cells
+    cands = pts[unvisited]
+    ego_dists = ego_dists_all[unvisited]
+
+    # 3. Primary attraction score + tie-breaker:
+    #    - Closer unvisited cells get higher (less negative) scores (-ego_dists)
+    #    - Tiny directional gradient (1e-2) breaks exact distance ties on the square grid
+    #      by preferring +X then +Y without overriding real distance costs
+    tie_breaker = 1e-2 * (cands[:, 0] + 0.1 * cands[:, 1])
+    score = -ego_dists + tie_breaker
+
+    # 4. Peer deconfliction: penalize candidates close to any active teammate so drones spread out
+    for p in peers:
+        if p.active and p.id != ego.id:
+            # Compute 2D Euclidean distance from teammate `p` to every candidate cell
+            peer_dists = np.linalg.norm(cands - p.pos[:2], axis=1)
+            # Subtract up to 8.0 points if a candidate is within 4.0m of teammate `p`
+            score -= np.maximum(0.0, 8.0 - 2.0 * peer_dists)
+
+    # Pick the highest-scoring cell and push it safely away from buildings and arena walls
+    best_xy = apply_obstacle_clearance(cands[int(np.argmax(score))], grid)
+    # Return the new 3D waypoint at cruising altitude z = 2.4m
+    return np.array([float(best_xy[0]), float(best_xy[1]), 2.4])

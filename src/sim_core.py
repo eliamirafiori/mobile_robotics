@@ -96,7 +96,8 @@ class CoverageGrid:
         for idx, (cx, cy) in enumerate(self.cell_centers):
             origin[0], origin[1] = cx, cy
             hit = mujoco.mj_ray(model, data, origin, direction, None, 1, -1, geom_out)
-            if 0.0 < hit < 9.8:
+            hit_body = model.geom_bodyid[geom_out[0]] if geom_out[0] >= 0 else 0
+            if 0.0 < hit < 9.8 and hit_body == 0:
                 self.free_cells[idx] = False
                 self.drone_belief_uncertainty[:, idx] = 0.0
 
