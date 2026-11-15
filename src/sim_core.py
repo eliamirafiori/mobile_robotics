@@ -1,8 +1,8 @@
 """
-sim_core.py — MuJoCo 3D Drone Swarm Physics, Sensor, and Rendering Engine
-=========================================================================
-Encapsulates low-level simulation mechanics so algorithm researchers can
-focus purely on decentralized decision-making in `algorithms.py`.
+sim_core.py — MuJoCo 3D Drone Swarm Physics, Battery, Sensor & Rendering Engine
+================================================================================
+Encapsulates low-level physics, camera raycasting, battery drain/charging, and
+performance metrics so research algorithms in `algorithms.py` stay clean.
 """
 
 import json
@@ -39,20 +39,28 @@ class CameraSpec:
 
 @dataclass
 class DroneState:
-    """Real-time physical and networking state of a single drone."""
+    """Real-time physical, networking, and battery state of a single drone."""
 
     id: int
     pos: np.ndarray  # [x, y, z] position (m)
     vel: np.ndarray  # [vx, vy, vz] velocity (m/s)
     yaw: float = 0.0  # Heading around Z-axis (rad)
-    active: bool = True  # False on simulated failure/dropout
+    active: bool = True  # False on simulated failure or empty battery
     comm_radius: float = 9.0  # P2P radio range (m)
     target: np.ndarray = field(default_factory=lambda: np.zeros(3, dtype=np.float64))
+
+    # --- Battery & Charging Telemetry ---
+    battery: float = 100.0  # State of Charge: 0.0% (empty) to 100.0% (full)
+    is_charging: bool = False  # True while landed on an active charging pad
+    energy_used: float = 0.0  # Cumulative battery % drained during flight
+    charge_time: float = 0.0  # Total simulated seconds spent recharging
+    charge_visits: int = 0  # Number of docking cycles at a station
+    depleted: bool = False  # True if battery hit 0.0% mid-mission
 
 
 @dataclass
 class CoverageGrid:
-    """Discretized ground map tracking coverage, uncertainty beliefs, and ownership."""
+    """Discretized ground map tracking coverage, uncertainty beliefs, and stations."""
 
     num_drones: int
     size: float = 16.0
@@ -83,12 +91,16 @@ class CoverageGrid:
         )
         # Current territory owner ID (-1 = obstacle/unassigned)
         self.cell_owner = np.full(self.num_cells, -1, dtype=np.int32)
-        # Traversable ground mask (False where buildings sit)
+        # Traversable ground mask (False where static 3D obstacles sit)
         self.free_cells = np.ones(self.num_cells, dtype=bool)
         self.obstacle_centers = np.empty((0, 2), dtype=np.float64)
 
+        # 2D coordinates [x, y] of charging stations (populated by scenario builder)
+        self.charging_stations = np.empty((0, 2), dtype=np.float64)
+        self.pad_radius: float = 0.85
+
     def mark_obstacles(self, model: mujoco.MjModel, data: mujoco.MjData) -> None:
-        """Detects static 3D obstacles via downward rays from z = 10m."""
+        """Detects static worldbody obstacles via downward rays from z = 10m."""
         origin = np.array([0.0, 0.0, 10.0], dtype=np.float64)
         direction = np.array([0.0, 0.0, -1.0], dtype=np.float64)
         geom_out = np.zeros(1, dtype=np.int32)
@@ -97,6 +109,7 @@ class CoverageGrid:
             origin[0], origin[1] = cx, cy
             hit = mujoco.mj_ray(model, data, origin, direction, None, 1, -1, geom_out)
             hit_body = model.geom_bodyid[geom_out[0]] if geom_out[0] >= 0 else 0
+            # Only treat static worldbody geometry (body 0) above floor as obstacles
             if 0.0 < hit < 9.8 and hit_body == 0:
                 self.free_cells[idx] = False
                 self.drone_belief_uncertainty[:, idx] = 0.0
@@ -255,7 +268,109 @@ class CoverageGrid:
 
 
 # =====================================================================
-# 2. SHARED GEOMETRY HELPER
+# 2. PERFORMANCE METRICS TRACKER (COVERAGE TIME & BATTERY MANAGEMENT)
+# =====================================================================
+
+
+class SwarmMetricsTracker:
+    """Records Coverage Time milestones and Battery Management KPIs."""
+
+    def __init__(self, dt: float):
+        self.dt = dt
+        self.milestones: Dict[float, Optional[Dict[str, float]]] = {
+            50.0: None,
+            80.0: None,
+            90.0: None,
+            95.0: None,
+            99.0: None,
+        }
+
+    def update(self, step: int, coverage_pct: float) -> None:
+        for target_pct, recorded in self.milestones.items():
+            if recorded is None and coverage_pct >= target_pct:
+                self.milestones[target_pct] = {
+                    "step": step,
+                    "time_sec": round(step * self.dt, 2),
+                }
+
+    def summarize_and_save(
+        self,
+        total_steps: int,
+        grid: CoverageGrid,
+        drones: List[DroneState],
+        algo_name: str,
+        scenario: str,
+        out_path: str = "metrics_report.json",
+    ) -> dict:
+        total_energy_used = sum(d.energy_used for d in drones)
+        total_charge_time = sum(d.charge_time for d in drones)
+        total_charge_visits = sum(d.charge_visits for d in drones)
+        depleted_count = sum(1 for d in drones if d.depleted)
+        active_count = sum(1 for d in drones if d.active)
+        avg_final_battery = float(np.mean([d.battery for d in drones]))
+        min_final_battery = float(np.min([d.battery for d in drones]))
+
+        report = {
+            "algorithm": algo_name,
+            "scenario": scenario,
+            "num_drones": len(drones),
+            "coverage_time_metrics": {
+                "final_coverage_pct": round(grid.combined_coverage_pct, 2),
+                "total_steps_run": total_steps,
+                "total_sim_time_sec": round(total_steps * self.dt, 2),
+                "time_to_50_pct": self.milestones[50.0],
+                "time_to_80_pct": self.milestones[80.0],
+                "time_to_90_pct": self.milestones[90.0],
+                "time_to_95_pct": self.milestones[95.0],
+                "time_to_99_pct": self.milestones[99.0],
+            },
+            "battery_management_metrics": {
+                "total_energy_drained_pct": round(total_energy_used, 2),
+                "avg_final_battery_pct": round(avg_final_battery, 2),
+                "min_final_battery_pct": round(min_final_battery, 2),
+                "total_charging_dockings": total_charge_visits,
+                "total_charging_time_sec": round(total_charge_time, 2),
+                "battery_depletion_failures": depleted_count,
+                "surviving_drones": f"{active_count}/{len(drones)}",
+            },
+        }
+
+        print("\n" + "=" * 64)
+        print(
+            f"PERFORMANCE METRICS | Algo: {algo_name.upper()} | Scenario: {scenario.upper()}"
+        )
+        print("-" * 64)
+        print("1. COVERAGE TIME:")
+        for pct, info in self.milestones.items():
+            val = (
+                f"{info['time_sec']}s (step {info['step']})" if info else "Not reached"
+            )
+            print(f"   - Time to {pct:4.0f}% coverage : {val}")
+        print(
+            f"   - Final coverage        : {grid.combined_coverage_pct:.1f}% in {total_steps * self.dt:.2f}s"
+        )
+
+        print("2. BATTERY MANAGEMENT:")
+        print(f"   - Total energy drained  : {total_energy_used:.1f}% (across swarm)")
+        print(
+            f"   - Final battery (avg/min): {avg_final_battery:.1f}% / {min_final_battery:.1f}%"
+        )
+        print(
+            f"   - Charging dockings     : {total_charge_visits} visits ({total_charge_time:.2f}s total)"
+        )
+        print(
+            f"   - Empty-battery crashes : {depleted_count} | Surviving: {active_count}/{len(drones)}"
+        )
+        print("=" * 64)
+
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(report, f, indent=2)
+        print(f"-> Saved metrics report to '{out_path}'")
+        return report
+
+
+# =====================================================================
+# 3. SHARED GEOMETRY HELPER
 # =====================================================================
 
 
@@ -280,7 +395,7 @@ def apply_obstacle_clearance(
 
 
 # =====================================================================
-# 3. VIEWER OVERLAY, SLAM EXTRACTOR, XML BUILDER & SIMULATION LOOP
+# 4. VIEWER OVERLAY, SLAM EXTRACTOR, XML BUILDER & SIMULATION LOOP
 # =====================================================================
 
 DRONE_PALETTE_RGBA = [
@@ -417,10 +532,16 @@ def build_swarm_xml(
     scenario: str = "urban",
     custom_mesh_path: Optional[str] = None,
     arena_size: float = 16.0,
-) -> str:
-    """Generates the MuJoCo MJCF XML model for the requested scenario and sensor type."""
+) -> Tuple[str, np.ndarray]:
+    """
+    Generates the MuJoCo MJCF XML model and returns `(xml_str, charging_stations_xy)`.
+    In the `charging` scenario, two glowing ground charging pads are placed at
+    `(-4.8, 0.0)` and `(4.8, 0.0)` alongside two obstacles.
+    """
     half = arena_size * 0.5
     assets, obstacles = "", ""
+    stations = np.empty((0, 2), dtype=np.float64)
+
     if scenario == "urban":
         obstacles = """
         <geom name="bldg_1" type="box" pos="-3.5 3.0 1.4" size="1.4 1.4 1.4" rgba="0.35 0.38 0.45 1"/>
@@ -436,6 +557,19 @@ def build_swarm_xml(
         <geom name="rubble_1" type="box" pos="1.0 -3.0 0.6" size="1.5 1.0 0.6" euler="15 20 35" rgba="0.45 0.4 0.35 1"/>
         <geom name="pillar_1" type="cylinder" pos="-4.5 4.0 1.5" size="0.6 1.5" rgba="0.55 0.5 0.45 1"/>
         <geom name="pillar_2" type="cylinder" pos="4.5 -4.0 1.3" size="0.7 1.3" rgba="0.55 0.5 0.45 1"/>
+        """
+    elif scenario == "charging":
+        stations = np.array([[-4.8, 0.0], [4.8, 0.0]], dtype=np.float64)
+        obstacles = """
+        <!-- Two obstacles separating the north and south sectors -->
+        <geom name="obs_north" type="box" pos="0.0 3.6 1.2" size="1.3 1.0 1.2" rgba="0.35 0.38 0.45 1"/>
+        <geom name="obs_south" type="box" pos="0.0 -3.6 1.2" size="1.3 1.0 1.2" rgba="0.35 0.38 0.45 1"/>
+        <!-- Charging Station 0 (West Pad) -->
+        <geom name="pad_0_outer" type="cylinder" pos="-4.8 0.0 0.01" size="0.90 0.01" rgba="0.1 0.95 0.45 0.85" contype="0" conaffinity="0"/>
+        <geom name="pad_0_inner" type="cylinder" pos="-4.8 0.0 0.015" size="0.45 0.01" rgba="0.9 1.0 0.95 0.95" contype="0" conaffinity="0"/>
+        <!-- Charging Station 1 (East Pad) -->
+        <geom name="pad_1_outer" type="cylinder" pos="4.8 0.0 0.01" size="0.90 0.01" rgba="0.1 0.95 0.45 0.85" contype="0" conaffinity="0"/>
+        <geom name="pad_1_inner" type="cylinder" pos="4.8 0.0 0.015" size="0.45 0.01" rgba="0.9 1.0 0.95 0.95" contype="0" conaffinity="0"/>
         """
     elif (
         scenario == "custom_mesh"
@@ -483,7 +617,7 @@ def build_swarm_xml(
         <general name="fz_{i}" joint="joint_{i}" gear="0 0 1 0 0 0" ctrlrange="-25 35"/>"""
         )
 
-    return f"""
+    xml = f"""
     <mujoco model="drone_swarm">
         <option timestep="0.01" gravity="0 0 -9.81" integrator="RK4"/>
         <asset>
@@ -502,10 +636,11 @@ def build_swarm_xml(
         </worldbody>
         <actuator>{"".join(actuators)}</actuator>
     </mujoco>"""
+    return xml, stations
 
 
 def save_coverage_report(grid: CoverageGrid, drones: List[DroneState]) -> None:
-    """Saves a PNG showing individual drone coverage maps alongside the combined swarm map."""
+    """Saves a PNG showing individual and combined coverage maps + charging stations."""
     try:
         import matplotlib
 
@@ -528,8 +663,17 @@ def save_coverage_report(grid: CoverageGrid, drones: List[DroneState]) -> None:
                 origin="lower",
                 extent=[-half, half, -half, half],
             )
+            if len(grid.charging_stations) > 0:
+                axes[i].plot(
+                    grid.charging_stations[:, 0],
+                    grid.charging_stations[:, 1],
+                    "gs",
+                    markersize=8,
+                )
             axes[i].plot(d.pos[0], d.pos[1], "ro", markersize=7)
-            axes[i].set_title(f"Drone {i}\n({grid.get_drone_coverage_pct(i):.1f}%)")
+            axes[i].set_title(
+                f"Drone {i} (Bat: {d.battery:.0f}%)\n({grid.get_drone_coverage_pct(i):.1f}%)"
+            )
 
         comb = grid.combined_visited_map.reshape(res, res).astype(float)
         comb[obs_2d] = -0.5
@@ -541,6 +685,14 @@ def save_coverage_report(grid: CoverageGrid, drones: List[DroneState]) -> None:
             origin="lower",
             extent=[-half, half, -half, half],
         )
+        if len(grid.charging_stations) > 0:
+            axes[-1].plot(
+                grid.charging_stations[:, 0],
+                grid.charging_stations[:, 1],
+                "gs",
+                markersize=9,
+                label="Charger",
+            )
         for d in drones:
             axes[-1].plot(d.pos[0], d.pos[1], "wo", markersize=6)
         axes[-1].set_title(f"COMBINED\n({grid.combined_coverage_pct:.1f}%)")
@@ -560,16 +712,16 @@ def run_simulation(
     scenario: str = "flat",
     custom_mesh: Optional[str] = None,
     num_drones: int = 4,
-    max_steps: int = 1500,
+    max_steps: int = 2500,
     show_assignment: bool = True,
     save_slam_data: bool = False,
     slam_interval: int = 25,
-) -> None:
-    """Runs the MuJoCo physics loop with the provided coverage planner function."""
+    enable_battery: bool = True,
+) -> dict:
+    """Runs the MuJoCo physics loop with battery drain, charging stations, and KPI logging."""
     cam_spec = CameraSpec(sensor_type=sensor_type)
-    model = mujoco.MjModel.from_xml_string(
-        build_swarm_xml(num_drones, cam_spec, scenario, custom_mesh)
-    )
+    xml_str, stations = build_swarm_xml(num_drones, cam_spec, scenario, custom_mesh)
+    model = mujoco.MjModel.from_xml_string(xml_str)
     data = mujoco.MjData(model)
     mujoco.mj_forward(model, data)
 
@@ -583,7 +735,9 @@ def run_simulation(
     ]
 
     grid = CoverageGrid(num_drones=num_drones)
+    grid.charging_stations = stations
     grid.mark_obstacles(model, data)
+
     drones = [
         DroneState(
             i,
@@ -596,7 +750,47 @@ def run_simulation(
     slam = (
         MultiDroneSlamExtractor(model, cam_spec, num_drones) if save_slam_data else None
     )
+    metrics = SwarmMetricsTracker(dt=model.opt.timestep)
     kp, kd, mass = 6.0, 4.5, 1.2
+
+    def update_battery_and_charging() -> None:
+        """Simulates thrust-based battery drain in flight and fast recharging on pads."""
+        dt = model.opt.timestep
+        has_pads = len(grid.charging_stations) > 0
+
+        for d in drones:
+            if not d.active:
+                d.is_charging = False
+                continue
+
+            # Check if drone has touched down on any charging station pad
+            on_pad = False
+            if has_pads and d.pos[2] <= 0.45:
+                pad_dists = np.linalg.norm(grid.charging_stations - d.pos[:2], axis=1)
+                on_pad = bool(np.min(pad_dists) <= grid.pad_radius)
+
+            if on_pad and d.battery < 100.0:
+                if not d.is_charging:
+                    d.charge_visits += 1
+                d.is_charging = True
+                # Recharge at 35% per second (0.35% per 0.01s step)
+                d.battery = min(100.0, d.battery + 0.35)
+                d.charge_time += dt
+            else:
+                d.is_charging = False
+                # Base avionics/hover drain (4.5%/s) + velocity-dependent propulsion drain (up to 2.5%/s)
+                speed_xy = float(np.linalg.norm(d.vel[:2]))
+                drain = 0.045 + 0.025 * min(1.0, speed_xy / 7.0)
+                d.battery = max(0.0, d.battery - drain)
+                d.energy_used += drain
+
+                if d.battery <= 0.0:
+                    d.active = False
+                    d.depleted = True
+                    model.geom_rgba[geom_ids[d.id]] = [0.8, 0.1, 0.1, 0.5]
+                    print(
+                        f"\n[BATTERY EMPTY] Drone {d.id} ran out of battery and grounded!"
+                    )
 
     def step_fn(step: int) -> bool:
         for i, d in enumerate(drones):
@@ -605,10 +799,19 @@ def run_simulation(
             data.qpos[i * 7 + 3 : i * 7 + 7] = (1.0, 0.0, 0.0, 0.0)
             data.qvel[i * 6 + 3 : i * 6 + 6] = (0.0, 0.0, 0.0)
 
-        if step == 500 and num_drones > 1:
+        # Inject random hardware failure at step 500 ONLY outside the `charging` scenario
+        if (
+            scenario != "charging"
+            and step == 500
+            and num_drones > 1
+            and drones[0].active
+        ):
             drones[0].active = False
             model.geom_rgba[geom_ids[0]] = [0.8, 0.1, 0.1, 0.4]
             print(f"\n[EVENT @ Step {step}] Drone 0 FAILED! Redistributing workload...")
+
+        if enable_battery:
+            update_battery_and_charging()
 
         if step % 4 == 0:
             grid.update_from_cameras(drones, body_ids, cam_spec, model, data)
@@ -643,28 +846,32 @@ def run_simulation(
 
         mujoco.mj_step(model, data)
 
+        cov_pct = grid.combined_coverage_pct
+        metrics.update(step, cov_pct)
+
         if step % 250 == 0:
-            indiv = " | ".join(
-                f"D{i}:{grid.get_drone_coverage_pct(i):.0f}%" for i in range(num_drones)
+            status = " | ".join(
+                f"D{i}:{grid.get_drone_coverage_pct(i):.0f}%(B:{drones[i].battery:.0f}%)"
+                for i in range(num_drones)
             )
-            print(
-                f"Step {step:04d} | Combined: {grid.combined_coverage_pct:5.1f}% | [{indiv}]"
-            )
+            print(f"Step {step:04d} | Combined: {cov_pct:5.1f}% | [{status}]")
 
-        return grid.combined_coverage_pct >= 99.8
+        # Stop early if 99.8% covered or if all drones are inactive
+        any_active = any(d.active for d in drones)
+        return (cov_pct >= 99.8) or (not any_active)
 
+    steps_executed = 0
     if mode == "visual":
         from mujoco import viewer
 
         with viewer.launch_passive(model, data) as v:
-            step = 0
-            while v.is_running() and step < max_steps:
+            while v.is_running() and steps_executed < max_steps:
                 t0 = time.perf_counter()
-                done = step_fn(step)
+                done = step_fn(steps_executed)
                 if show_assignment:
                     render_live_assignment_overlay(v, grid)
                 v.sync()
-                step += 1
+                steps_executed += 1
                 if done:
                     break
                 dt = time.perf_counter() - t0
@@ -672,10 +879,11 @@ def run_simulation(
                     time.sleep(model.opt.timestep - dt)
     else:
         for step in range(max_steps):
+            steps_executed = step + 1
             if step_fn(step):
-                print(f"\n[COMPLETE] 100% coverage reached at step {step}!")
                 break
 
     if slam:
         slam.close()
     save_coverage_report(grid, drones)
+    return metrics.summarize_and_save(steps_executed, grid, drones, algo_name, scenario)

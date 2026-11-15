@@ -6,7 +6,7 @@ Every algorithm receives one drone's local view (`ego`, `peers`, `grid`)
 and returns a 3D target waypoint `[x, y, z]`.
 """
 
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Optional
 import numpy as np
 from sim_core import CoverageGrid, DroneState, apply_obstacle_clearance
 
@@ -185,4 +185,86 @@ def sector_patrol_coverage(
     # Pick the highest-scoring cell and push it safely away from buildings and arena walls
     best_xy = apply_obstacle_clearance(cands[int(np.argmax(score))], grid)
     # Return the new 3D waypoint at cruising altitude z = 2.4m
+    return np.array([float(best_xy[0]), float(best_xy[1]), 2.4])
+
+
+def manage_battery_rtb(
+    ego: DroneState,
+    grid: CoverageGrid,
+    low_thresh: float = 30.0,
+    resume_thresh: float = 95.0,
+) -> Optional[np.ndarray]:
+    """
+    Return-To-Base (RTB) Battery Hysteresis Controller:
+      - If battery <= `low_thresh`, fly to the closest charging station and descend to z = 0.20m.
+      - If currently charging (`ego.is_charging`) and battery < `resume_thresh`, stay docked.
+      - Returns a 3D charging waypoint if charging is needed, or `None` to resume exploration.
+    """
+    if len(grid.charging_stations) == 0:
+        return None
+
+    needs_charge = (ego.battery <= low_thresh) or (
+        ego.is_charging and ego.battery < resume_thresh
+    )
+    if not needs_charge:
+        return None
+
+    # Find nearest charging station in 2D
+    pad_dists = np.linalg.norm(grid.charging_stations - ego.pos[:2], axis=1)
+    nearest_pad = grid.charging_stations[int(np.argmin(pad_dists))]
+
+    # Descend to z = 0.20m once horizontally aligned so `pos[2] <= 0.45m` triggers charging
+    horiz_dist = float(np.linalg.norm(nearest_pad - ego.pos[:2]))
+    target_z = 0.20 if horiz_dist < 0.75 else 2.4
+    return np.array([float(nearest_pad[0]), float(nearest_pad[1]), target_z])
+
+
+@register_algorithm("battery_patrol")
+def battery_aware_patrol(
+    ego: DroneState, peers: List[DroneState], grid: CoverageGrid
+) -> np.ndarray:
+    """
+    Battery-Aware Decentralized Patrol:
+      1. Checks battery level first via `manage_battery_rtb` (RTB at 30%, resume at 95%).
+      2. Otherwise runs `patrol_clean` greedy exploration with peer repulsion.
+    """
+    # 1. Priority override: recharge if battery is low or mid-charge cycle
+    charge_wp = manage_battery_rtb(ego, grid, low_thresh=30.0, resume_thresh=95.0)
+    if charge_wp is not None:
+        return charge_wp
+
+    pts = grid.cell_centers
+    unc = grid.drone_belief_uncertainty[ego.id]
+
+    # 2. Keep current target while flying toward it AND it remains unvisited
+    dist_to_target = float(np.linalg.norm(ego.target[:2] - ego.pos[:2]))
+    nearest_cell = int(np.argmin(np.linalg.norm(pts - ego.target[:2], axis=1)))
+    if (
+        dist_to_target > 0.8
+        and grid.free_cells[nearest_cell]
+        and unc[nearest_cell] > 0.25
+    ):
+        return np.array([float(ego.target[0]), float(ego.target[1]), 2.4])
+
+    # 3. Filter unvisited free cells outside our immediate 0.8m hover radius
+    ego_dists_all = np.linalg.norm(pts - ego.pos[:2], axis=1)
+    unvisited = (unc > 0.25) & grid.free_cells & (ego_dists_all > 0.8)
+    if not np.any(unvisited):
+        unvisited = (unc > 0.25) & grid.free_cells
+    if not np.any(unvisited):
+        return np.array([float(ego.pos[0]), float(ego.pos[1]), 2.4])
+
+    cands = pts[unvisited]
+    ego_dists = ego_dists_all[unvisited]
+
+    # 4. Score by proximity + directional tie-breaker + peer repulsion
+    tie_breaker = 1e-2 * (cands[:, 0] + 0.1 * cands[:, 1])
+    score = -ego_dists + tie_breaker
+
+    for p in peers:
+        if p.active and p.id != ego.id:
+            peer_dists = np.linalg.norm(cands - p.pos[:2], axis=1)
+            score -= np.maximum(0.0, 8.0 - 2.0 * peer_dists)
+
+    best_xy = apply_obstacle_clearance(cands[int(np.argmax(score))], grid)
     return np.array([float(best_xy[0]), float(best_xy[1]), 2.4])

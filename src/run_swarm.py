@@ -7,7 +7,7 @@ from sim_core import run_simulation
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Decentralized Drone Swarm Coverage")
     parser.add_argument(
-        "--algo", type=str, default="voronoi", choices=list(ALGORITHMS.keys())
+        "--algo", type=str, default="battery_patrol", choices=list(ALGORITHMS.keys())
     )
     parser.add_argument(
         "--mode", type=str, default="headless", choices=["headless", "visual"]
@@ -19,11 +19,11 @@ if __name__ == "__main__":
         "--scenario",
         type=str,
         default="flat",
-        choices=["flat", "urban", "ruins", "custom_mesh"],
+        choices=["flat", "urban", "ruins", "charging", "custom_mesh"],
     )
     parser.add_argument("--mesh-file", type=str, default=None)
     parser.add_argument("--drones", type=int, default=4)
-    parser.add_argument("--steps", type=int, default=2000)
+    parser.add_argument("--steps", type=int, default=2500)
     args = parser.parse_args()
 
     run_simulation(
