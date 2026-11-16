@@ -1,4 +1,4 @@
-**Yes, that is the exact right instinct.** In robotics and autonomous systems research, problems are intentionally decoupled into a hierarchical stack:
+In robotics and autonomous systems research, problems are intentionally decoupled into a hierarchical stack:
 
 1. **Low-Level Control & Dynamics** (motor mixing, PID/MPC attitude stabilization, rigid-body physics)
 2. **Perception & State Estimation** (SLAM, visual odometry, depth reconstruction)

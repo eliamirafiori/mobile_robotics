@@ -81,15 +81,3 @@ In static mapping, once a cell is scanned, you never need to return. In real res
 | **Optimization Landscape** | Step function (zero gradient inside regions) | Smooth gradient for centroids, utility, & RL |
 | **Dynamic Environments** | Cannot represent stale/changing areas | Supports temporal decay ("forgetting rate") |
 | **Distributed Merging** | Logical `OR` (loses confidence nuance) | `min(u_i, u_j)` CRDT (preserves confidence) |
-
----
-
-### How to Experiment With This in Your Code
-
-If you want to test how uncertainty shapes swarm behavior in your research:
-
-1. **Test Persistent Patrol:** Add `self.drone_belief_uncertainty[self.free_cells] = np.minimum(1.0, self.drone_belief_uncertainty[self.free_cells] + 0.001)` at the start of `update_from_cameras()` in `swarm_coverage.py` and watch how `voronoi` and `frontier` continuously circulate to re-verify stale areas.
-
-
-2. **Test Communication Blackouts:** Lower `comm_radius` from `9.0` to `3.0` in `DroneState`. Because drones only merge uncertainty maps when within `3.0 m`, you can measure how limited bandwidth affects duplicate exploration and recovery time after a drone failure.
-3. 
