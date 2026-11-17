@@ -73,3 +73,27 @@ docker run --rm -it --gpus all `
   drone-swarm-mujoco `
   python rl_swarm_env.py --mode visual --scenario flat
 ```
+
+## FIXES
+
+- Non fare la media MEAN tra le mappe di incertezza, ma dare priorità alla certezza MAX dei droni
+- FINIRE AREA COVERAGE
+- IMPLEMENTARE RL
+- DOPO CON STRATEGIA ERGODIC
+
+## INFO
+
+- GPS per zone aperte, GPA non accurato per zone interne
+- Utilizzo di landmarks o oggetti di riferimento (es. staccionata)
+- Waypoints per la navigazione del drone
+- A livello industriale si approaccia a task di computer vision
+- MAPPE RANDOMIZZATE (DIMENSIONE E TOPOLOGIA, SEMPRE PLANARE)
+- NUMERO DI STEP NECESSARI PER IL COMPLETAMENTO DEL TASK
+- MASSIMO PERCORSO DAI DRONI
+- COLLISION AVOIDANCE
+- BATTERY MANAGEMENTE (NUMERO DI VOLTE NECESSARIO PER LA CARICA)
+
+## PER PUBBLICAZIONE ROBOTICS AND AUTOMATION LETTERS
+
+- RICOSTRUZIONE 3D
+- METRICHE QUALITATIVE TRA POINT CLOUD A MESH
