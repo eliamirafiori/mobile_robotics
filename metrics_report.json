@@ -1,14 +1,14 @@
 {
   "algorithm": "charge_test",
-  "scenario": "charging",
+  "scenario": "flat",
   "num_drones": 4,
   "grid_size_m": 50.0,
   "grid_resolution": 50,
-  "num_charging_stations": 2,
+  "num_charging_stations": 0,
   "coverage_time_metrics": {
-    "final_coverage_pct": 5.38,
-    "total_steps_run": 2181,
-    "total_sim_time_sec": 21.81,
+    "final_coverage_pct": 2.56,
+    "total_steps_run": 15000,
+    "total_sim_time_sec": 150.0,
     "time_to_50_pct": null,
     "time_to_80_pct": null,
     "time_to_90_pct": null,
@@ -16,12 +16,12 @@
     "time_to_99_pct": null
   },
   "battery_management_metrics": {
-    "total_energy_drained_pct": 400.12,
-    "avg_final_battery_pct": 0.0,
-    "min_final_battery_pct": 0.0,
+    "total_energy_drained_pct": 0.0,
+    "avg_final_battery_pct": 100.0,
+    "min_final_battery_pct": 100.0,
     "total_charging_dockings": 0,
     "total_charging_time_sec": 0.0,
-    "battery_depletion_failures": 4,
-    "surviving_drones": "0/4"
+    "battery_depletion_failures": 0,
+    "surviving_drones": "3/4"
   }
 }

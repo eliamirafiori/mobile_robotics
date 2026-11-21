@@ -76,10 +76,10 @@ docker run --rm -it --gpus all `
 
 ## FIXES
 
-- Non fare la media MEAN tra le mappe di incertezza, ma dare priorità alla certezza MAX dei droni
-- FINIRE AREA COVERAGE
-- IMPLEMENTARE STRATEGIA ERGODIC
-- IMPLEMENTARE RL
+- [x] Non fare la media MEAN tra le mappe di incertezza, ma dare priorità alla certezza MAX dei droni
+- [] FINIRE AREA COVERAGE
+- [] IMPLEMENTARE STRATEGIA ERGODIC
+- [] IMPLEMENTARE RL
 
 ## INFO
 
@@ -95,5 +95,5 @@ docker run --rm -it --gpus all `
 
 ## PER PUBBLICAZIONE ROBOTICS AND AUTOMATION LETTERS
 
-- RICOSTRUZIONE 3D
-- METRICHE QUALITATIVE TRA POINT CLOUD A MESH
+- [] RICOSTRUZIONE 3D
+- [] METRICHE QUALITATIVE TRA POINT CLOUD A MESH

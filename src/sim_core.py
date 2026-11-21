@@ -66,7 +66,6 @@ class CoverageGrid:
     size: float
     resolution: int
 
-
     def __post_init__(self):
         half = self.size * 0.5
         self.cell_size = self.size / self.resolution
@@ -790,7 +789,6 @@ def run_simulation(
     show_assignment: bool = True,
     save_slam_data: bool = False,
     slam_interval: int = 25,
-    enable_battery: bool = True,
 ) -> dict:
     """Runs the MuJoCo physics loop with battery drain, charging stations, and KPI logging."""
     cam_spec = CameraSpec(sensor_type=sensor_type)
@@ -798,6 +796,8 @@ def run_simulation(
     model = mujoco.MjModel.from_xml_string(xml_str)
     data = mujoco.MjData(model)
     mujoco.mj_forward(model, data)
+
+    enable_battery = scenario == "charging"
 
     body_ids = [
         mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, f"drone_{i}")
