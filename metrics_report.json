@@ -1,12 +1,12 @@
 {
-  "algorithm": "charge_test",
+  "algorithm": "frontier",
   "scenario": "flat",
-  "num_drones": 4,
+  "num_drones": 6,
   "grid_size_m": 50.0,
   "grid_resolution": 50,
   "num_charging_stations": 0,
   "coverage_time_metrics": {
-    "final_coverage_pct": 2.56,
+    "final_coverage_pct": 41.36,
     "total_steps_run": 15000,
     "total_sim_time_sec": 150.0,
     "time_to_50_pct": null,
@@ -22,6 +22,6 @@
     "total_charging_dockings": 0,
     "total_charging_time_sec": 0.0,
     "battery_depletion_failures": 0,
-    "surviving_drones": "3/4"
+    "surviving_drones": "5/6"
   }
 }

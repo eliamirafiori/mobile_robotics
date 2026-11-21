@@ -34,6 +34,31 @@ docker run --rm -it --gpus all `
   python src/run_swarm.py --mode headless --scenario charging --algo charge_test --steps 1500
 ```
 
+#### Generate a Reusable Dataset of $N$ Random Maps
+
+```powershell
+docker run --rm -it --gpus all -e MUJOCO_GL=egl -v "${PWD}:/workspace" drone-swarm-mujoco `
+  python src/run_swarm.py --generate-dataset maps_dataset --num-maps 10 --grid-size 20 --grid-res 40 --obstacles 5 --stations 2 --seed 42
+```
+
+#### Benchmark Algorithms Across Your Dataset (Both Battery Scenarios)
+
+```powershell
+docker run --rm -it --gpus all -e MUJOCO_GL=egl -v "${PWD}:/workspace" drone-swarm-mujoco `
+  python src/run_swarm.py --benchmark --dataset maps_dataset `
+  --algos voronoi frontier patrol battery_patrol battery_voronoi `
+  --steps 3500 --out-dir benchmark_results
+```
+
+#### Inspect a Single Map Visually (Preset, Random, or JSON Dataset File)
+
+```powershell
+docker run --rm -it --gpus all -e MUJOCO_GL=glfw -e DISPLAY=:0 `
+  -v "\\wsl.localhost\Ubuntu\mnt\wslg\.X11-unix:/tmp/.X11-unix" `
+  -v "${PWD}:/workspace" drone-swarm-mujoco `
+  python src/run_swarm.py --algo battery_patrol --map maps_dataset/map_000.json --battery --mode visual --steps 3500
+```
+
 ### RL
 
 ```powershell
