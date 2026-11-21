@@ -268,3 +268,43 @@ def battery_aware_patrol(
 
     best_xy = apply_obstacle_clearance(cands[int(np.argmax(score))], grid)
     return np.array([float(best_xy[0]), float(best_xy[1]), 2.4])
+
+
+@register_algorithm("charge_test")
+def charge_shuttle(
+    ego: DroneState, _peers: List[DroneState], grid: CoverageGrid
+) -> np.ndarray:
+    """
+    Shuttle that only exercises the charging pads.
+
+    Each drone is pinned to one station (drone id modulo the number of pads)
+    and a landing spot inside that pad, so several drones can dock without
+    stacking on the same point. It cruises a few meters off the pad at
+    altitude until the battery falls to 60%, then lands and stays docked
+    until the battery reaches 98%.
+    """
+    if len(grid.charging_stations) == 0:
+        return np.array([float(ego.pos[0]), float(ego.pos[1]), 2.4])
+
+    n_pads = len(grid.charging_stations)
+    pad = grid.charging_stations[ego.id % n_pads]
+    # Keep shared-pad landings inside pad_radius (0.85 m).
+    offsets = np.array(
+        [[0.35, 0.0], [-0.35, 0.0], [0.0, 0.35], [0.0, -0.35]],
+        dtype=np.float64,
+    )
+    offset = offsets[(ego.id // n_pads) % len(offsets)]
+    landing_xy = pad + offset
+    cruise_xy = pad + np.array([0.0, 2.5]) + offset
+
+    low_thresh, resume_thresh = 60.0, 98.0
+    needs_charge = (ego.battery <= low_thresh) or (
+        ego.is_charging and ego.battery < resume_thresh
+    )
+    if needs_charge:
+        horiz = float(np.linalg.norm(landing_xy - ego.pos[:2]))
+        # Descend only once aligned so z <= 0.45 m can start charging.
+        target_z = 0.20 if horiz < 0.6 else 2.4
+        return np.array([float(landing_xy[0]), float(landing_xy[1]), target_z])
+
+    return np.array([float(cruise_xy[0]), float(cruise_xy[1]), 2.4])

@@ -31,7 +31,7 @@ docker run --rm -it --gpus all `
   -e MUJOCO_GL=egl `
   -v "${PWD}:/workspace" `
   drone-swarm-mujoco `
-  python src/run_swarm.py --mode headless --scenario charging --algo battery_patrol --steps 1500
+  python src/run_swarm.py --mode headless --scenario charging --algo charge_test --steps 1500
 ```
 
 ### RL
@@ -78,8 +78,8 @@ docker run --rm -it --gpus all `
 
 - Non fare la media MEAN tra le mappe di incertezza, ma dare priorità alla certezza MAX dei droni
 - FINIRE AREA COVERAGE
+- IMPLEMENTARE STRATEGIA ERGODIC
 - IMPLEMENTARE RL
-- DOPO CON STRATEGIA ERGODIC
 
 ## INFO
 

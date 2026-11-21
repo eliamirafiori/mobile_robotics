@@ -63,8 +63,9 @@ class CoverageGrid:
     """Discretized ground map tracking coverage, uncertainty beliefs, and stations."""
 
     num_drones: int
-    size: float = 16.0
-    resolution: int = 40
+    size: float
+    resolution: int
+
 
     def __post_init__(self):
         half = self.size * 0.5
@@ -314,6 +315,9 @@ class SwarmMetricsTracker:
             "algorithm": algo_name,
             "scenario": scenario,
             "num_drones": len(drones),
+            "grid_size_m": grid.size,
+            "grid_resolution": grid.resolution,
+            "num_charging_stations": int(len(grid.charging_stations)),
             "coverage_time_metrics": {
                 "final_coverage_pct": round(grid.combined_coverage_pct, 2),
                 "total_steps_run": total_steps,
@@ -338,6 +342,10 @@ class SwarmMetricsTracker:
         print("\n" + "=" * 64)
         print(
             f"PERFORMANCE METRICS | Algo: {algo_name.upper()} | Scenario: {scenario.upper()}"
+        )
+        print(
+            f"   Grid {grid.size:.1f} m, {grid.resolution}x{grid.resolution} cells"
+            f" | Charging stations: {len(grid.charging_stations)}"
         )
         print("-" * 64)
         print("1. COVERAGE TIME:")
@@ -526,21 +534,85 @@ class MultiDroneSlamExtractor:
         self.depth_renderer.close()
 
 
+def place_charging_stations(
+    num_stations: int, arena_size: float, pad_radius: float = 0.85
+) -> np.ndarray:
+    """
+    Places charging pads along the open east-west line.
+
+    Two pads on a 16 m arena sit at (-4.8, 0) and (4.8, 0). Extra pads spread
+    between those ends, and the span grows when the arena is larger or the
+    pads would otherwise overlap.
+    """
+    if num_stations < 0:
+        raise ValueError(f"num_stations must be >= 0, got {num_stations}")
+    if num_stations == 0:
+        return np.empty((0, 2), dtype=np.float64)
+
+    half = arena_size * 0.5
+    margin = pad_radius + 0.35
+    max_reach = half - margin
+    if max_reach <= 0.0:
+        raise ValueError(
+            f"arena size {arena_size} m is too small for a charging pad "
+            f"(need more than {2.0 * margin:.1f} m)"
+        )
+
+    if num_stations == 1:
+        return np.array([[0.0, 0.0]], dtype=np.float64)
+
+    min_spacing = 2.0 * pad_radius + 0.3
+    default_reach = arena_size * 0.3
+    needed_reach = min_spacing * (num_stations - 1) / 2.0
+    reach = min(max(default_reach, needed_reach), max_reach)
+    spacing = (2.0 * reach) / (num_stations - 1)
+    if spacing + 1e-6 < min_spacing:
+        raise ValueError(
+            f"{num_stations} charging stations do not fit in a {arena_size:.1f} m arena "
+            f"(spacing would be {spacing:.2f} m, need {min_spacing:.2f} m). "
+            "Increase --grid-size or lower --stations."
+        )
+
+    xs = np.linspace(-reach, reach, num_stations)
+    return np.column_stack([xs, np.zeros(num_stations)]).astype(np.float64)
+
+
+def _charging_pad_geoms(stations: np.ndarray) -> str:
+    """Visual-only pad cylinders. contype=0 so they do not block landings."""
+    geoms = []
+    for i, (x, y) in enumerate(stations):
+        geoms.append(
+            f'<geom name="pad_{i}_outer" type="cylinder" pos="{x:.3f} {y:.3f} 0.01" '
+            f'size="0.90 0.01" rgba="0.1 0.95 0.45 0.85" contype="0" conaffinity="0"/>'
+            f'<geom name="pad_{i}_inner" type="cylinder" pos="{x:.3f} {y:.3f} 0.015" '
+            f'size="0.45 0.01" rgba="0.9 1.0 0.95 0.95" contype="0" conaffinity="0"/>'
+        )
+    return "".join(geoms)
+
+
 def build_swarm_xml(
     num_drones: int,
     cam_spec: CameraSpec,
     scenario: str = "urban",
     custom_mesh_path: Optional[str] = None,
     arena_size: float = 16.0,
+    num_stations: Optional[int] = None,
 ) -> Tuple[str, np.ndarray]:
     """
     Generates the MuJoCo MJCF XML model and returns `(xml_str, charging_stations_xy)`.
-    In the `charging` scenario, two glowing ground charging pads are placed at
-    `(-4.8, 0.0)` and `(4.8, 0.0)` alongside two obstacles.
+
+    `num_stations` defaults to 2 in the charging scenario and 0 otherwise.
+    Pads are spaced along y = 0. The charging scenario also keeps its two
+    obstacles, scaled with `arena_size` so a 16 m arena matches the original map.
     """
+    if arena_size <= 0.0:
+        raise ValueError(f"arena_size must be positive, got {arena_size}")
+    if num_stations is None:
+        num_stations = 2 if scenario == "charging" else 0
+
     half = arena_size * 0.5
     assets, obstacles = "", ""
-    stations = np.empty((0, 2), dtype=np.float64)
+    stations = place_charging_stations(num_stations, arena_size)
 
     if scenario == "urban":
         obstacles = """
@@ -712,6 +784,8 @@ def run_simulation(
     scenario: str = "flat",
     custom_mesh: Optional[str] = None,
     num_drones: int = 4,
+    size: Optional[float] = 16.0,
+    resolution: Optional[int] = 40,
     max_steps: int = 2500,
     show_assignment: bool = True,
     save_slam_data: bool = False,
@@ -734,7 +808,7 @@ def run_simulation(
         for i in range(num_drones)
     ]
 
-    grid = CoverageGrid(num_drones=num_drones)
+    grid = CoverageGrid(num_drones=num_drones, size=size, resolution=resolution)
     grid.charging_stations = stations
     grid.mark_obstacles(model, data)
 
