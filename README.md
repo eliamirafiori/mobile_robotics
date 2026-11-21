@@ -38,16 +38,16 @@ docker run --rm -it --gpus all `
 
 ```powershell
 docker run --rm -it --gpus all -e MUJOCO_GL=egl -v "${PWD}:/workspace" drone-swarm-mujoco `
-  python src/run_swarm.py --generate-dataset maps_dataset --num-maps 10 --grid-size 20 --grid-res 40 --obstacles 5 --stations 2 --seed 42
+  python src/run_swarm.py --generate-dataset complex_maps --num-maps 14 --grid-size 20 --grid-res 40 --wall-mode hard --obstacles 4 --stations 2 --seed 42
 ```
 
 #### Benchmark Algorithms Across Your Dataset (Both Battery Scenarios)
 
 ```powershell
 docker run --rm -it --gpus all -e MUJOCO_GL=egl -v "${PWD}:/workspace" drone-swarm-mujoco `
-  python src/run_swarm.py --benchmark --dataset maps_dataset `
+  python src/run_swarm.py --benchmark --dataset complex_maps `
   --algos voronoi frontier patrol battery_patrol battery_voronoi `
-  --steps 3500 --out-dir benchmark_results
+  --steps 3500 --out-dir complex_benchmark_results
 ```
 
 #### Inspect a Single Map Visually (Preset, Random, or JSON Dataset File)
@@ -97,6 +97,15 @@ docker run --rm -it --gpus all `
   -v "${PWD}:/workspace" `
   drone-swarm-mujoco `
   python rl_swarm_env.py --mode visual --scenario flat
+```
+
+### Watch a Concave U-Shape or Ring Map Visually (Hard Walls + A Corner Routing + Battery)
+
+```powershell
+docker run --rm -it --gpus all -e MUJOCO_GL=glfw -e DISPLAY=:0 `
+  -v "\\wsl.localhost\Ubuntu\mnt\wslg\.X11-unix:/tmp/.X11-unix" `
+  -v "${PWD}:/workspace" drone-swarm-mujoco `
+  python src/run_swarm.py --algo battery_patrol --map flat --shape u_shape --wall-mode hard --battery --mode visual --steps 3500
 ```
 
 ## FIXES

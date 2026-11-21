@@ -1,0 +1,47 @@
+{
+  "algorithm": "battery_patrol",
+  "map_name": "flat_u_shape",
+  "shape": "u_shape",
+  "wall_mode": "hard",
+  "scenario_mode": "with_battery",
+  "battery_enabled": true,
+  "num_drones": 4,
+  "grid_size_m": 20.0,
+  "grid_resolution": 40,
+  "num_obstacles": 0,
+  "num_charging_stations": 2,
+  "coverage_time_metrics": {
+    "final_coverage_pct": 99.84,
+    "total_steps_run": 3457,
+    "total_sim_time_sec": 34.57,
+    "time_to_50_pct": {
+      "step": 576,
+      "time_sec": 5.76
+    },
+    "time_to_80_pct": {
+      "step": 1256,
+      "time_sec": 12.56
+    },
+    "time_to_90_pct": {
+      "step": 1596,
+      "time_sec": 15.96
+    },
+    "time_to_95_pct": {
+      "step": 1680,
+      "time_sec": 16.8
+    },
+    "time_to_99_pct": {
+      "step": 2912,
+      "time_sec": 29.12
+    }
+  },
+  "battery_management_metrics": {
+    "total_energy_drained_pct": 455.75,
+    "avg_final_battery_pct": 31.08,
+    "min_final_battery_pct": 0.0,
+    "total_charging_dockings": 9,
+    "total_charging_time_sec": 5.22,
+    "battery_depletion_failures": 2,
+    "surviving_drones": "2/4"
+  }
+}

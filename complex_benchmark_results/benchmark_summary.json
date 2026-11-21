@@ -1,0 +1,6528 @@
+[
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_000_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.81,
+      "total_steps_run": 2041,
+      "total_sim_time_sec": 20.41,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 1056,
+        "time_sec": 10.56
+      },
+      "time_to_90_pct": {
+        "step": 1580,
+        "time_sec": 15.8
+      },
+      "time_to_95_pct": {
+        "step": 1824,
+        "time_sec": 18.24
+      },
+      "time_to_99_pct": {
+        "step": 1940,
+        "time_sec": 19.4
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_000_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.37,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 500,
+        "time_sec": 5.0
+      },
+      "time_to_80_pct": {
+        "step": 1216,
+        "time_sec": 12.16
+      },
+      "time_to_90_pct": {
+        "step": 1792,
+        "time_sec": 17.92
+      },
+      "time_to_95_pct": {
+        "step": 2152,
+        "time_sec": 21.52
+      },
+      "time_to_99_pct": {
+        "step": 3272,
+        "time_sec": 32.72
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_000_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.81,
+      "total_steps_run": 3005,
+      "total_sim_time_sec": 30.05,
+      "time_to_50_pct": {
+        "step": 884,
+        "time_sec": 8.84
+      },
+      "time_to_80_pct": {
+        "step": 1572,
+        "time_sec": 15.72
+      },
+      "time_to_90_pct": {
+        "step": 1756,
+        "time_sec": 17.56
+      },
+      "time_to_95_pct": {
+        "step": 1952,
+        "time_sec": 19.52
+      },
+      "time_to_99_pct": {
+        "step": 2568,
+        "time_sec": 25.68
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_000_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.81,
+      "total_steps_run": 3005,
+      "total_sim_time_sec": 30.05,
+      "time_to_50_pct": {
+        "step": 884,
+        "time_sec": 8.84
+      },
+      "time_to_80_pct": {
+        "step": 1572,
+        "time_sec": 15.72
+      },
+      "time_to_90_pct": {
+        "step": 1756,
+        "time_sec": 17.56
+      },
+      "time_to_95_pct": {
+        "step": 1952,
+        "time_sec": 19.52
+      },
+      "time_to_99_pct": {
+        "step": 2568,
+        "time_sec": 25.68
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_000_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.81,
+      "total_steps_run": 2041,
+      "total_sim_time_sec": 20.41,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 1056,
+        "time_sec": 10.56
+      },
+      "time_to_90_pct": {
+        "step": 1580,
+        "time_sec": 15.8
+      },
+      "time_to_95_pct": {
+        "step": 1824,
+        "time_sec": 18.24
+      },
+      "time_to_99_pct": {
+        "step": 1940,
+        "time_sec": 19.4
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_000_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.81,
+      "total_steps_run": 2041,
+      "total_sim_time_sec": 20.41,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 1056,
+        "time_sec": 10.56
+      },
+      "time_to_90_pct": {
+        "step": 1580,
+        "time_sec": 15.8
+      },
+      "time_to_95_pct": {
+        "step": 1824,
+        "time_sec": 18.24
+      },
+      "time_to_99_pct": {
+        "step": 1940,
+        "time_sec": 19.4
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 333.64,
+      "avg_final_battery_pct": 16.59,
+      "min_final_battery_pct": 16.06,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_000_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 97.85,
+      "total_steps_run": 2473,
+      "total_sim_time_sec": 24.73,
+      "time_to_50_pct": {
+        "step": 500,
+        "time_sec": 5.0
+      },
+      "time_to_80_pct": {
+        "step": 1216,
+        "time_sec": 12.16
+      },
+      "time_to_90_pct": {
+        "step": 1792,
+        "time_sec": 17.92
+      },
+      "time_to_95_pct": {
+        "step": 2152,
+        "time_sec": 21.52
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.09,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_000_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 98.92,
+      "total_steps_run": 2494,
+      "total_sim_time_sec": 24.94,
+      "time_to_50_pct": {
+        "step": 884,
+        "time_sec": 8.84
+      },
+      "time_to_80_pct": {
+        "step": 1572,
+        "time_sec": 15.72
+      },
+      "time_to_90_pct": {
+        "step": 1756,
+        "time_sec": 17.56
+      },
+      "time_to_95_pct": {
+        "step": 1952,
+        "time_sec": 19.52
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.05,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_000_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 97.53,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 884,
+        "time_sec": 8.84
+      },
+      "time_to_80_pct": {
+        "step": 1572,
+        "time_sec": 15.72
+      },
+      "time_to_90_pct": {
+        "step": 1752,
+        "time_sec": 17.52
+      },
+      "time_to_95_pct": {
+        "step": 3264,
+        "time_sec": 32.64
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 458.11,
+      "avg_final_battery_pct": 29.59,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 19,
+      "total_charging_time_sec": 5.2,
+      "battery_depletion_failures": 2,
+      "surviving_drones": "2/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_000_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.68,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 1056,
+        "time_sec": 10.56
+      },
+      "time_to_90_pct": {
+        "step": 1580,
+        "time_sec": 15.8
+      },
+      "time_to_95_pct": {
+        "step": 1964,
+        "time_sec": 19.64
+      },
+      "time_to_99_pct": {
+        "step": 2940,
+        "time_sec": 29.4
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 488.5,
+      "avg_final_battery_pct": 48.06,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 15,
+      "total_charging_time_sec": 8.14,
+      "battery_depletion_failures": 1,
+      "surviving_drones": "3/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_001_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1661,
+      "total_sim_time_sec": 16.61,
+      "time_to_50_pct": {
+        "step": 396,
+        "time_sec": 3.96
+      },
+      "time_to_80_pct": {
+        "step": 752,
+        "time_sec": 7.52
+      },
+      "time_to_90_pct": {
+        "step": 932,
+        "time_sec": 9.32
+      },
+      "time_to_95_pct": {
+        "step": 1256,
+        "time_sec": 12.56
+      },
+      "time_to_99_pct": {
+        "step": 1404,
+        "time_sec": 14.04
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_001_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 3013,
+      "total_sim_time_sec": 30.13,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 996,
+        "time_sec": 9.96
+      },
+      "time_to_90_pct": {
+        "step": 1276,
+        "time_sec": 12.76
+      },
+      "time_to_95_pct": {
+        "step": 1620,
+        "time_sec": 16.2
+      },
+      "time_to_99_pct": {
+        "step": 2492,
+        "time_sec": 24.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_001_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 1613,
+      "total_sim_time_sec": 16.13,
+      "time_to_50_pct": {
+        "step": 480,
+        "time_sec": 4.8
+      },
+      "time_to_80_pct": {
+        "step": 1016,
+        "time_sec": 10.16
+      },
+      "time_to_90_pct": {
+        "step": 1280,
+        "time_sec": 12.8
+      },
+      "time_to_95_pct": {
+        "step": 1452,
+        "time_sec": 14.52
+      },
+      "time_to_99_pct": {
+        "step": 1564,
+        "time_sec": 15.64
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_001_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 1613,
+      "total_sim_time_sec": 16.13,
+      "time_to_50_pct": {
+        "step": 480,
+        "time_sec": 4.8
+      },
+      "time_to_80_pct": {
+        "step": 1016,
+        "time_sec": 10.16
+      },
+      "time_to_90_pct": {
+        "step": 1280,
+        "time_sec": 12.8
+      },
+      "time_to_95_pct": {
+        "step": 1452,
+        "time_sec": 14.52
+      },
+      "time_to_99_pct": {
+        "step": 1564,
+        "time_sec": 15.64
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_001_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1661,
+      "total_sim_time_sec": 16.61,
+      "time_to_50_pct": {
+        "step": 396,
+        "time_sec": 3.96
+      },
+      "time_to_80_pct": {
+        "step": 752,
+        "time_sec": 7.52
+      },
+      "time_to_90_pct": {
+        "step": 932,
+        "time_sec": 9.32
+      },
+      "time_to_95_pct": {
+        "step": 1256,
+        "time_sec": 12.56
+      },
+      "time_to_99_pct": {
+        "step": 1404,
+        "time_sec": 14.04
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_001_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1661,
+      "total_sim_time_sec": 16.61,
+      "time_to_50_pct": {
+        "step": 396,
+        "time_sec": 3.96
+      },
+      "time_to_80_pct": {
+        "step": 752,
+        "time_sec": 7.52
+      },
+      "time_to_90_pct": {
+        "step": 932,
+        "time_sec": 9.32
+      },
+      "time_to_95_pct": {
+        "step": 1256,
+        "time_sec": 12.56
+      },
+      "time_to_99_pct": {
+        "step": 1404,
+        "time_sec": 14.04
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 269.54,
+      "avg_final_battery_pct": 32.62,
+      "min_final_battery_pct": 32.25,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_001_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 98.87,
+      "total_steps_run": 2544,
+      "total_sim_time_sec": 25.44,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 996,
+        "time_sec": 9.96
+      },
+      "time_to_90_pct": {
+        "step": 1276,
+        "time_sec": 12.76
+      },
+      "time_to_95_pct": {
+        "step": 1620,
+        "time_sec": 16.2
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.08,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_001_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 1613,
+      "total_sim_time_sec": 16.13,
+      "time_to_50_pct": {
+        "step": 480,
+        "time_sec": 4.8
+      },
+      "time_to_80_pct": {
+        "step": 1016,
+        "time_sec": 10.16
+      },
+      "time_to_90_pct": {
+        "step": 1280,
+        "time_sec": 12.8
+      },
+      "time_to_95_pct": {
+        "step": 1452,
+        "time_sec": 14.52
+      },
+      "time_to_99_pct": {
+        "step": 1564,
+        "time_sec": 15.64
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 260.17,
+      "avg_final_battery_pct": 34.96,
+      "min_final_battery_pct": 34.83,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_001_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 1613,
+      "total_sim_time_sec": 16.13,
+      "time_to_50_pct": {
+        "step": 480,
+        "time_sec": 4.8
+      },
+      "time_to_80_pct": {
+        "step": 1016,
+        "time_sec": 10.16
+      },
+      "time_to_90_pct": {
+        "step": 1280,
+        "time_sec": 12.8
+      },
+      "time_to_95_pct": {
+        "step": 1452,
+        "time_sec": 14.52
+      },
+      "time_to_99_pct": {
+        "step": 1564,
+        "time_sec": 15.64
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 260.17,
+      "avg_final_battery_pct": 34.96,
+      "min_final_battery_pct": 34.83,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_001_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1661,
+      "total_sim_time_sec": 16.61,
+      "time_to_50_pct": {
+        "step": 396,
+        "time_sec": 3.96
+      },
+      "time_to_80_pct": {
+        "step": 752,
+        "time_sec": 7.52
+      },
+      "time_to_90_pct": {
+        "step": 932,
+        "time_sec": 9.32
+      },
+      "time_to_95_pct": {
+        "step": 1256,
+        "time_sec": 12.56
+      },
+      "time_to_99_pct": {
+        "step": 1404,
+        "time_sec": 14.04
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 269.54,
+      "avg_final_battery_pct": 32.62,
+      "min_final_battery_pct": 32.25,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_002_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1465,
+      "total_sim_time_sec": 14.65,
+      "time_to_50_pct": {
+        "step": 180,
+        "time_sec": 1.8
+      },
+      "time_to_80_pct": {
+        "step": 672,
+        "time_sec": 6.72
+      },
+      "time_to_90_pct": {
+        "step": 1140,
+        "time_sec": 11.4
+      },
+      "time_to_95_pct": {
+        "step": 1300,
+        "time_sec": 13.0
+      },
+      "time_to_99_pct": {
+        "step": 1428,
+        "time_sec": 14.28
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_002_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.72,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 212,
+        "time_sec": 2.12
+      },
+      "time_to_80_pct": {
+        "step": 592,
+        "time_sec": 5.92
+      },
+      "time_to_90_pct": {
+        "step": 784,
+        "time_sec": 7.84
+      },
+      "time_to_95_pct": {
+        "step": 1036,
+        "time_sec": 10.36
+      },
+      "time_to_99_pct": {
+        "step": 1256,
+        "time_sec": 12.56
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_002_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1225,
+      "total_sim_time_sec": 12.25,
+      "time_to_50_pct": {
+        "step": 220,
+        "time_sec": 2.2
+      },
+      "time_to_80_pct": {
+        "step": 572,
+        "time_sec": 5.72
+      },
+      "time_to_90_pct": {
+        "step": 732,
+        "time_sec": 7.32
+      },
+      "time_to_95_pct": {
+        "step": 852,
+        "time_sec": 8.52
+      },
+      "time_to_99_pct": {
+        "step": 1048,
+        "time_sec": 10.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_002_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1225,
+      "total_sim_time_sec": 12.25,
+      "time_to_50_pct": {
+        "step": 220,
+        "time_sec": 2.2
+      },
+      "time_to_80_pct": {
+        "step": 572,
+        "time_sec": 5.72
+      },
+      "time_to_90_pct": {
+        "step": 732,
+        "time_sec": 7.32
+      },
+      "time_to_95_pct": {
+        "step": 852,
+        "time_sec": 8.52
+      },
+      "time_to_99_pct": {
+        "step": 1048,
+        "time_sec": 10.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_002_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1465,
+      "total_sim_time_sec": 14.65,
+      "time_to_50_pct": {
+        "step": 180,
+        "time_sec": 1.8
+      },
+      "time_to_80_pct": {
+        "step": 672,
+        "time_sec": 6.72
+      },
+      "time_to_90_pct": {
+        "step": 1140,
+        "time_sec": 11.4
+      },
+      "time_to_95_pct": {
+        "step": 1300,
+        "time_sec": 13.0
+      },
+      "time_to_99_pct": {
+        "step": 1428,
+        "time_sec": 14.28
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_002_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1465,
+      "total_sim_time_sec": 14.65,
+      "time_to_50_pct": {
+        "step": 180,
+        "time_sec": 1.8
+      },
+      "time_to_80_pct": {
+        "step": 672,
+        "time_sec": 6.72
+      },
+      "time_to_90_pct": {
+        "step": 1140,
+        "time_sec": 11.4
+      },
+      "time_to_95_pct": {
+        "step": 1300,
+        "time_sec": 13.0
+      },
+      "time_to_99_pct": {
+        "step": 1428,
+        "time_sec": 14.28
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 229.34,
+      "avg_final_battery_pct": 42.67,
+      "min_final_battery_pct": 41.41,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_002_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.72,
+      "total_steps_run": 2599,
+      "total_sim_time_sec": 25.99,
+      "time_to_50_pct": {
+        "step": 212,
+        "time_sec": 2.12
+      },
+      "time_to_80_pct": {
+        "step": 592,
+        "time_sec": 5.92
+      },
+      "time_to_90_pct": {
+        "step": 784,
+        "time_sec": 7.84
+      },
+      "time_to_95_pct": {
+        "step": 1036,
+        "time_sec": 10.36
+      },
+      "time_to_99_pct": {
+        "step": 1256,
+        "time_sec": 12.56
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.05,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_002_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1225,
+      "total_sim_time_sec": 12.25,
+      "time_to_50_pct": {
+        "step": 220,
+        "time_sec": 2.2
+      },
+      "time_to_80_pct": {
+        "step": 572,
+        "time_sec": 5.72
+      },
+      "time_to_90_pct": {
+        "step": 732,
+        "time_sec": 7.32
+      },
+      "time_to_95_pct": {
+        "step": 852,
+        "time_sec": 8.52
+      },
+      "time_to_99_pct": {
+        "step": 1048,
+        "time_sec": 10.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 194.89,
+      "avg_final_battery_pct": 51.28,
+      "min_final_battery_pct": 50.71,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_002_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1225,
+      "total_sim_time_sec": 12.25,
+      "time_to_50_pct": {
+        "step": 220,
+        "time_sec": 2.2
+      },
+      "time_to_80_pct": {
+        "step": 572,
+        "time_sec": 5.72
+      },
+      "time_to_90_pct": {
+        "step": 732,
+        "time_sec": 7.32
+      },
+      "time_to_95_pct": {
+        "step": 852,
+        "time_sec": 8.52
+      },
+      "time_to_99_pct": {
+        "step": 1048,
+        "time_sec": 10.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 194.89,
+      "avg_final_battery_pct": 51.28,
+      "min_final_battery_pct": 50.71,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_002_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1465,
+      "total_sim_time_sec": 14.65,
+      "time_to_50_pct": {
+        "step": 180,
+        "time_sec": 1.8
+      },
+      "time_to_80_pct": {
+        "step": 672,
+        "time_sec": 6.72
+      },
+      "time_to_90_pct": {
+        "step": 1140,
+        "time_sec": 11.4
+      },
+      "time_to_95_pct": {
+        "step": 1300,
+        "time_sec": 13.0
+      },
+      "time_to_99_pct": {
+        "step": 1428,
+        "time_sec": 14.28
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 229.34,
+      "avg_final_battery_pct": 42.67,
+      "min_final_battery_pct": 41.41,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_003_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 2145,
+      "total_sim_time_sec": 21.45,
+      "time_to_50_pct": {
+        "step": 312,
+        "time_sec": 3.12
+      },
+      "time_to_80_pct": {
+        "step": 828,
+        "time_sec": 8.28
+      },
+      "time_to_90_pct": {
+        "step": 1360,
+        "time_sec": 13.6
+      },
+      "time_to_95_pct": {
+        "step": 1588,
+        "time_sec": 15.88
+      },
+      "time_to_99_pct": {
+        "step": 2084,
+        "time_sec": 20.84
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_003_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 2465,
+      "total_sim_time_sec": 24.65,
+      "time_to_50_pct": {
+        "step": 388,
+        "time_sec": 3.88
+      },
+      "time_to_80_pct": {
+        "step": 772,
+        "time_sec": 7.72
+      },
+      "time_to_90_pct": {
+        "step": 1276,
+        "time_sec": 12.76
+      },
+      "time_to_95_pct": {
+        "step": 1524,
+        "time_sec": 15.24
+      },
+      "time_to_99_pct": {
+        "step": 1812,
+        "time_sec": 18.12
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_003_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 1921,
+      "total_sim_time_sec": 19.21,
+      "time_to_50_pct": {
+        "step": 576,
+        "time_sec": 5.76
+      },
+      "time_to_80_pct": {
+        "step": 1108,
+        "time_sec": 11.08
+      },
+      "time_to_90_pct": {
+        "step": 1368,
+        "time_sec": 13.68
+      },
+      "time_to_95_pct": {
+        "step": 1496,
+        "time_sec": 14.96
+      },
+      "time_to_99_pct": {
+        "step": 1792,
+        "time_sec": 17.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_003_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 1921,
+      "total_sim_time_sec": 19.21,
+      "time_to_50_pct": {
+        "step": 576,
+        "time_sec": 5.76
+      },
+      "time_to_80_pct": {
+        "step": 1108,
+        "time_sec": 11.08
+      },
+      "time_to_90_pct": {
+        "step": 1368,
+        "time_sec": 13.68
+      },
+      "time_to_95_pct": {
+        "step": 1496,
+        "time_sec": 14.96
+      },
+      "time_to_99_pct": {
+        "step": 1792,
+        "time_sec": 17.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_003_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 2145,
+      "total_sim_time_sec": 21.45,
+      "time_to_50_pct": {
+        "step": 312,
+        "time_sec": 3.12
+      },
+      "time_to_80_pct": {
+        "step": 828,
+        "time_sec": 8.28
+      },
+      "time_to_90_pct": {
+        "step": 1360,
+        "time_sec": 13.6
+      },
+      "time_to_95_pct": {
+        "step": 1588,
+        "time_sec": 15.88
+      },
+      "time_to_99_pct": {
+        "step": 2084,
+        "time_sec": 20.84
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_003_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 2145,
+      "total_sim_time_sec": 21.45,
+      "time_to_50_pct": {
+        "step": 312,
+        "time_sec": 3.12
+      },
+      "time_to_80_pct": {
+        "step": 828,
+        "time_sec": 8.28
+      },
+      "time_to_90_pct": {
+        "step": 1360,
+        "time_sec": 13.6
+      },
+      "time_to_95_pct": {
+        "step": 1588,
+        "time_sec": 15.88
+      },
+      "time_to_99_pct": {
+        "step": 2084,
+        "time_sec": 20.84
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 347.63,
+      "avg_final_battery_pct": 13.09,
+      "min_final_battery_pct": 12.67,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_003_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.66,
+      "total_steps_run": 2540,
+      "total_sim_time_sec": 25.4,
+      "time_to_50_pct": {
+        "step": 388,
+        "time_sec": 3.88
+      },
+      "time_to_80_pct": {
+        "step": 772,
+        "time_sec": 7.72
+      },
+      "time_to_90_pct": {
+        "step": 1276,
+        "time_sec": 12.76
+      },
+      "time_to_95_pct": {
+        "step": 1524,
+        "time_sec": 15.24
+      },
+      "time_to_99_pct": {
+        "step": 1812,
+        "time_sec": 18.12
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.11,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_003_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 1921,
+      "total_sim_time_sec": 19.21,
+      "time_to_50_pct": {
+        "step": 576,
+        "time_sec": 5.76
+      },
+      "time_to_80_pct": {
+        "step": 1108,
+        "time_sec": 11.08
+      },
+      "time_to_90_pct": {
+        "step": 1368,
+        "time_sec": 13.68
+      },
+      "time_to_95_pct": {
+        "step": 1496,
+        "time_sec": 14.96
+      },
+      "time_to_99_pct": {
+        "step": 1792,
+        "time_sec": 17.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 307.66,
+      "avg_final_battery_pct": 23.08,
+      "min_final_battery_pct": 22.42,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_003_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 3437,
+      "total_sim_time_sec": 34.37,
+      "time_to_50_pct": {
+        "step": 576,
+        "time_sec": 5.76
+      },
+      "time_to_80_pct": {
+        "step": 1108,
+        "time_sec": 11.08
+      },
+      "time_to_90_pct": {
+        "step": 1368,
+        "time_sec": 13.68
+      },
+      "time_to_95_pct": {
+        "step": 1496,
+        "time_sec": 14.96
+      },
+      "time_to_99_pct": {
+        "step": 2104,
+        "time_sec": 21.04
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 480.18,
+      "avg_final_battery_pct": 45.37,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 31,
+      "total_charging_time_sec": 7.73,
+      "battery_depletion_failures": 1,
+      "surviving_drones": "3/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_003_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 3077,
+      "total_sim_time_sec": 30.77,
+      "time_to_50_pct": {
+        "step": 312,
+        "time_sec": 3.12
+      },
+      "time_to_80_pct": {
+        "step": 828,
+        "time_sec": 8.28
+      },
+      "time_to_90_pct": {
+        "step": 1360,
+        "time_sec": 13.6
+      },
+      "time_to_95_pct": {
+        "step": 1588,
+        "time_sec": 15.88
+      },
+      "time_to_99_pct": {
+        "step": 2916,
+        "time_sec": 29.16
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 444.56,
+      "avg_final_battery_pct": 45.94,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 14,
+      "total_charging_time_sec": 6.64,
+      "battery_depletion_failures": 1,
+      "surviving_drones": "3/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_004_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1877,
+      "total_sim_time_sec": 18.77,
+      "time_to_50_pct": {
+        "step": 340,
+        "time_sec": 3.4
+      },
+      "time_to_80_pct": {
+        "step": 752,
+        "time_sec": 7.52
+      },
+      "time_to_90_pct": {
+        "step": 1368,
+        "time_sec": 13.68
+      },
+      "time_to_95_pct": {
+        "step": 1696,
+        "time_sec": 16.96
+      },
+      "time_to_99_pct": {
+        "step": 1844,
+        "time_sec": 18.44
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_004_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.7,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 308,
+        "time_sec": 3.08
+      },
+      "time_to_80_pct": {
+        "step": 724,
+        "time_sec": 7.24
+      },
+      "time_to_90_pct": {
+        "step": 944,
+        "time_sec": 9.44
+      },
+      "time_to_95_pct": {
+        "step": 1248,
+        "time_sec": 12.48
+      },
+      "time_to_99_pct": {
+        "step": 1648,
+        "time_sec": 16.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_004_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 2325,
+      "total_sim_time_sec": 23.25,
+      "time_to_50_pct": {
+        "step": 420,
+        "time_sec": 4.2
+      },
+      "time_to_80_pct": {
+        "step": 1216,
+        "time_sec": 12.16
+      },
+      "time_to_90_pct": {
+        "step": 1632,
+        "time_sec": 16.32
+      },
+      "time_to_95_pct": {
+        "step": 1748,
+        "time_sec": 17.48
+      },
+      "time_to_99_pct": {
+        "step": 2256,
+        "time_sec": 22.56
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_004_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 2325,
+      "total_sim_time_sec": 23.25,
+      "time_to_50_pct": {
+        "step": 420,
+        "time_sec": 4.2
+      },
+      "time_to_80_pct": {
+        "step": 1216,
+        "time_sec": 12.16
+      },
+      "time_to_90_pct": {
+        "step": 1632,
+        "time_sec": 16.32
+      },
+      "time_to_95_pct": {
+        "step": 1748,
+        "time_sec": 17.48
+      },
+      "time_to_99_pct": {
+        "step": 2256,
+        "time_sec": 22.56
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_004_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1877,
+      "total_sim_time_sec": 18.77,
+      "time_to_50_pct": {
+        "step": 340,
+        "time_sec": 3.4
+      },
+      "time_to_80_pct": {
+        "step": 752,
+        "time_sec": 7.52
+      },
+      "time_to_90_pct": {
+        "step": 1368,
+        "time_sec": 13.68
+      },
+      "time_to_95_pct": {
+        "step": 1696,
+        "time_sec": 16.96
+      },
+      "time_to_99_pct": {
+        "step": 1844,
+        "time_sec": 18.44
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_004_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1877,
+      "total_sim_time_sec": 18.77,
+      "time_to_50_pct": {
+        "step": 340,
+        "time_sec": 3.4
+      },
+      "time_to_80_pct": {
+        "step": 752,
+        "time_sec": 7.52
+      },
+      "time_to_90_pct": {
+        "step": 1368,
+        "time_sec": 13.68
+      },
+      "time_to_95_pct": {
+        "step": 1696,
+        "time_sec": 16.96
+      },
+      "time_to_99_pct": {
+        "step": 1844,
+        "time_sec": 18.44
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 298.71,
+      "avg_final_battery_pct": 25.32,
+      "min_final_battery_pct": 23.96,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_004_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.7,
+      "total_steps_run": 2609,
+      "total_sim_time_sec": 26.09,
+      "time_to_50_pct": {
+        "step": 308,
+        "time_sec": 3.08
+      },
+      "time_to_80_pct": {
+        "step": 724,
+        "time_sec": 7.24
+      },
+      "time_to_90_pct": {
+        "step": 944,
+        "time_sec": 9.44
+      },
+      "time_to_95_pct": {
+        "step": 1248,
+        "time_sec": 12.48
+      },
+      "time_to_99_pct": {
+        "step": 1648,
+        "time_sec": 16.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.05,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_004_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 2325,
+      "total_sim_time_sec": 23.25,
+      "time_to_50_pct": {
+        "step": 420,
+        "time_sec": 4.2
+      },
+      "time_to_80_pct": {
+        "step": 1216,
+        "time_sec": 12.16
+      },
+      "time_to_90_pct": {
+        "step": 1632,
+        "time_sec": 16.32
+      },
+      "time_to_95_pct": {
+        "step": 1748,
+        "time_sec": 17.48
+      },
+      "time_to_99_pct": {
+        "step": 2256,
+        "time_sec": 22.56
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 373.93,
+      "avg_final_battery_pct": 6.52,
+      "min_final_battery_pct": 6.33,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_004_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 3213,
+      "total_sim_time_sec": 32.13,
+      "time_to_50_pct": {
+        "step": 420,
+        "time_sec": 4.2
+      },
+      "time_to_80_pct": {
+        "step": 1216,
+        "time_sec": 12.16
+      },
+      "time_to_90_pct": {
+        "step": 1632,
+        "time_sec": 16.32
+      },
+      "time_to_95_pct": {
+        "step": 1748,
+        "time_sec": 17.48
+      },
+      "time_to_99_pct": {
+        "step": 3128,
+        "time_sec": 31.28
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 456.02,
+      "avg_final_battery_pct": 46.32,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 17,
+      "total_charging_time_sec": 7.03,
+      "battery_depletion_failures": 1,
+      "surviving_drones": "3/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_004_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 3069,
+      "total_sim_time_sec": 30.69,
+      "time_to_50_pct": {
+        "step": 340,
+        "time_sec": 3.4
+      },
+      "time_to_80_pct": {
+        "step": 752,
+        "time_sec": 7.52
+      },
+      "time_to_90_pct": {
+        "step": 1368,
+        "time_sec": 13.68
+      },
+      "time_to_95_pct": {
+        "step": 1696,
+        "time_sec": 16.96
+      },
+      "time_to_99_pct": {
+        "step": 3004,
+        "time_sec": 30.04
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 431.83,
+      "avg_final_battery_pct": 62.05,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 16,
+      "total_charging_time_sec": 8.13,
+      "battery_depletion_failures": 1,
+      "surviving_drones": "3/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_005_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 2129,
+      "total_sim_time_sec": 21.29,
+      "time_to_50_pct": {
+        "step": 432,
+        "time_sec": 4.32
+      },
+      "time_to_80_pct": {
+        "step": 1208,
+        "time_sec": 12.08
+      },
+      "time_to_90_pct": {
+        "step": 1580,
+        "time_sec": 15.8
+      },
+      "time_to_95_pct": {
+        "step": 1768,
+        "time_sec": 17.68
+      },
+      "time_to_99_pct": {
+        "step": 2092,
+        "time_sec": 20.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_005_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 2209,
+      "total_sim_time_sec": 22.09,
+      "time_to_50_pct": {
+        "step": 344,
+        "time_sec": 3.44
+      },
+      "time_to_80_pct": {
+        "step": 788,
+        "time_sec": 7.88
+      },
+      "time_to_90_pct": {
+        "step": 1012,
+        "time_sec": 10.12
+      },
+      "time_to_95_pct": {
+        "step": 1180,
+        "time_sec": 11.8
+      },
+      "time_to_99_pct": {
+        "step": 1676,
+        "time_sec": 16.76
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_005_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 1549,
+      "total_sim_time_sec": 15.49,
+      "time_to_50_pct": {
+        "step": 376,
+        "time_sec": 3.76
+      },
+      "time_to_80_pct": {
+        "step": 960,
+        "time_sec": 9.6
+      },
+      "time_to_90_pct": {
+        "step": 1160,
+        "time_sec": 11.6
+      },
+      "time_to_95_pct": {
+        "step": 1300,
+        "time_sec": 13.0
+      },
+      "time_to_99_pct": {
+        "step": 1480,
+        "time_sec": 14.8
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_005_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 1549,
+      "total_sim_time_sec": 15.49,
+      "time_to_50_pct": {
+        "step": 376,
+        "time_sec": 3.76
+      },
+      "time_to_80_pct": {
+        "step": 960,
+        "time_sec": 9.6
+      },
+      "time_to_90_pct": {
+        "step": 1160,
+        "time_sec": 11.6
+      },
+      "time_to_95_pct": {
+        "step": 1300,
+        "time_sec": 13.0
+      },
+      "time_to_99_pct": {
+        "step": 1480,
+        "time_sec": 14.8
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_005_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 2129,
+      "total_sim_time_sec": 21.29,
+      "time_to_50_pct": {
+        "step": 432,
+        "time_sec": 4.32
+      },
+      "time_to_80_pct": {
+        "step": 1208,
+        "time_sec": 12.08
+      },
+      "time_to_90_pct": {
+        "step": 1580,
+        "time_sec": 15.8
+      },
+      "time_to_95_pct": {
+        "step": 1768,
+        "time_sec": 17.68
+      },
+      "time_to_99_pct": {
+        "step": 2092,
+        "time_sec": 20.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_005_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 2129,
+      "total_sim_time_sec": 21.29,
+      "time_to_50_pct": {
+        "step": 432,
+        "time_sec": 4.32
+      },
+      "time_to_80_pct": {
+        "step": 1208,
+        "time_sec": 12.08
+      },
+      "time_to_90_pct": {
+        "step": 1580,
+        "time_sec": 15.8
+      },
+      "time_to_95_pct": {
+        "step": 1768,
+        "time_sec": 17.68
+      },
+      "time_to_99_pct": {
+        "step": 2092,
+        "time_sec": 20.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 335.26,
+      "avg_final_battery_pct": 16.18,
+      "min_final_battery_pct": 14.63,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_005_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 2209,
+      "total_sim_time_sec": 22.09,
+      "time_to_50_pct": {
+        "step": 344,
+        "time_sec": 3.44
+      },
+      "time_to_80_pct": {
+        "step": 788,
+        "time_sec": 7.88
+      },
+      "time_to_90_pct": {
+        "step": 1012,
+        "time_sec": 10.12
+      },
+      "time_to_95_pct": {
+        "step": 1180,
+        "time_sec": 11.8
+      },
+      "time_to_99_pct": {
+        "step": 1676,
+        "time_sec": 16.76
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 356.35,
+      "avg_final_battery_pct": 10.91,
+      "min_final_battery_pct": 9.61,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_005_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 1549,
+      "total_sim_time_sec": 15.49,
+      "time_to_50_pct": {
+        "step": 376,
+        "time_sec": 3.76
+      },
+      "time_to_80_pct": {
+        "step": 960,
+        "time_sec": 9.6
+      },
+      "time_to_90_pct": {
+        "step": 1160,
+        "time_sec": 11.6
+      },
+      "time_to_95_pct": {
+        "step": 1300,
+        "time_sec": 13.0
+      },
+      "time_to_99_pct": {
+        "step": 1480,
+        "time_sec": 14.8
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 249.07,
+      "avg_final_battery_pct": 37.73,
+      "min_final_battery_pct": 37.1,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_005_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 1549,
+      "total_sim_time_sec": 15.49,
+      "time_to_50_pct": {
+        "step": 376,
+        "time_sec": 3.76
+      },
+      "time_to_80_pct": {
+        "step": 960,
+        "time_sec": 9.6
+      },
+      "time_to_90_pct": {
+        "step": 1160,
+        "time_sec": 11.6
+      },
+      "time_to_95_pct": {
+        "step": 1300,
+        "time_sec": 13.0
+      },
+      "time_to_99_pct": {
+        "step": 1480,
+        "time_sec": 14.8
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 249.07,
+      "avg_final_battery_pct": 37.73,
+      "min_final_battery_pct": 37.1,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_005_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 97.94,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 432,
+        "time_sec": 4.32
+      },
+      "time_to_80_pct": {
+        "step": 1208,
+        "time_sec": 12.08
+      },
+      "time_to_90_pct": {
+        "step": 1580,
+        "time_sec": 15.8
+      },
+      "time_to_95_pct": {
+        "step": 1768,
+        "time_sec": 17.68
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 508.61,
+      "avg_final_battery_pct": 55.85,
+      "min_final_battery_pct": 17.35,
+      "total_charging_dockings": 30,
+      "total_charging_time_sec": 9.71,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_006_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1337,
+      "total_sim_time_sec": 13.37,
+      "time_to_50_pct": {
+        "step": 212,
+        "time_sec": 2.12
+      },
+      "time_to_80_pct": {
+        "step": 540,
+        "time_sec": 5.4
+      },
+      "time_to_90_pct": {
+        "step": 832,
+        "time_sec": 8.32
+      },
+      "time_to_95_pct": {
+        "step": 924,
+        "time_sec": 9.24
+      },
+      "time_to_99_pct": {
+        "step": 1224,
+        "time_sec": 12.24
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_006_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 98.9,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 208,
+        "time_sec": 2.08
+      },
+      "time_to_80_pct": {
+        "step": 444,
+        "time_sec": 4.44
+      },
+      "time_to_90_pct": {
+        "step": 736,
+        "time_sec": 7.36
+      },
+      "time_to_95_pct": {
+        "step": 1072,
+        "time_sec": 10.72
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_006_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1729,
+      "total_sim_time_sec": 17.29,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 760,
+        "time_sec": 7.6
+      },
+      "time_to_90_pct": {
+        "step": 980,
+        "time_sec": 9.8
+      },
+      "time_to_95_pct": {
+        "step": 1152,
+        "time_sec": 11.52
+      },
+      "time_to_99_pct": {
+        "step": 1384,
+        "time_sec": 13.84
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_006_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1729,
+      "total_sim_time_sec": 17.29,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 760,
+        "time_sec": 7.6
+      },
+      "time_to_90_pct": {
+        "step": 980,
+        "time_sec": 9.8
+      },
+      "time_to_95_pct": {
+        "step": 1152,
+        "time_sec": 11.52
+      },
+      "time_to_99_pct": {
+        "step": 1384,
+        "time_sec": 13.84
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_006_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1337,
+      "total_sim_time_sec": 13.37,
+      "time_to_50_pct": {
+        "step": 212,
+        "time_sec": 2.12
+      },
+      "time_to_80_pct": {
+        "step": 540,
+        "time_sec": 5.4
+      },
+      "time_to_90_pct": {
+        "step": 832,
+        "time_sec": 8.32
+      },
+      "time_to_95_pct": {
+        "step": 924,
+        "time_sec": 9.24
+      },
+      "time_to_99_pct": {
+        "step": 1224,
+        "time_sec": 12.24
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_006_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1337,
+      "total_sim_time_sec": 13.37,
+      "time_to_50_pct": {
+        "step": 212,
+        "time_sec": 2.12
+      },
+      "time_to_80_pct": {
+        "step": 540,
+        "time_sec": 5.4
+      },
+      "time_to_90_pct": {
+        "step": 832,
+        "time_sec": 8.32
+      },
+      "time_to_95_pct": {
+        "step": 924,
+        "time_sec": 9.24
+      },
+      "time_to_99_pct": {
+        "step": 1224,
+        "time_sec": 12.24
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 216.98,
+      "avg_final_battery_pct": 45.76,
+      "min_final_battery_pct": 45.57,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_006_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 98.9,
+      "total_steps_run": 2628,
+      "total_sim_time_sec": 26.28,
+      "time_to_50_pct": {
+        "step": 208,
+        "time_sec": 2.08
+      },
+      "time_to_80_pct": {
+        "step": 444,
+        "time_sec": 4.44
+      },
+      "time_to_90_pct": {
+        "step": 736,
+        "time_sec": 7.36
+      },
+      "time_to_95_pct": {
+        "step": 1072,
+        "time_sec": 10.72
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.05,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_006_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1729,
+      "total_sim_time_sec": 17.29,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 760,
+        "time_sec": 7.6
+      },
+      "time_to_90_pct": {
+        "step": 980,
+        "time_sec": 9.8
+      },
+      "time_to_95_pct": {
+        "step": 1152,
+        "time_sec": 11.52
+      },
+      "time_to_99_pct": {
+        "step": 1384,
+        "time_sec": 13.84
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 278.77,
+      "avg_final_battery_pct": 30.31,
+      "min_final_battery_pct": 30.02,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_006_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1729,
+      "total_sim_time_sec": 17.29,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 760,
+        "time_sec": 7.6
+      },
+      "time_to_90_pct": {
+        "step": 980,
+        "time_sec": 9.8
+      },
+      "time_to_95_pct": {
+        "step": 1152,
+        "time_sec": 11.52
+      },
+      "time_to_99_pct": {
+        "step": 1384,
+        "time_sec": 13.84
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 278.77,
+      "avg_final_battery_pct": 30.31,
+      "min_final_battery_pct": 30.02,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_006_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1337,
+      "total_sim_time_sec": 13.37,
+      "time_to_50_pct": {
+        "step": 212,
+        "time_sec": 2.12
+      },
+      "time_to_80_pct": {
+        "step": 540,
+        "time_sec": 5.4
+      },
+      "time_to_90_pct": {
+        "step": 832,
+        "time_sec": 8.32
+      },
+      "time_to_95_pct": {
+        "step": 924,
+        "time_sec": 9.24
+      },
+      "time_to_99_pct": {
+        "step": 1224,
+        "time_sec": 12.24
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 216.98,
+      "avg_final_battery_pct": 45.76,
+      "min_final_battery_pct": 45.57,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_007_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.8,
+      "total_steps_run": 3241,
+      "total_sim_time_sec": 32.41,
+      "time_to_50_pct": {
+        "step": 560,
+        "time_sec": 5.6
+      },
+      "time_to_80_pct": {
+        "step": 1496,
+        "time_sec": 14.96
+      },
+      "time_to_90_pct": {
+        "step": 1932,
+        "time_sec": 19.32
+      },
+      "time_to_95_pct": {
+        "step": 2268,
+        "time_sec": 22.68
+      },
+      "time_to_99_pct": {
+        "step": 2824,
+        "time_sec": 28.24
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_007_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.6,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 536,
+        "time_sec": 5.36
+      },
+      "time_to_80_pct": {
+        "step": 1076,
+        "time_sec": 10.76
+      },
+      "time_to_90_pct": {
+        "step": 1564,
+        "time_sec": 15.64
+      },
+      "time_to_95_pct": {
+        "step": 2248,
+        "time_sec": 22.48
+      },
+      "time_to_99_pct": {
+        "step": 3268,
+        "time_sec": 32.68
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_007_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.8,
+      "total_steps_run": 2825,
+      "total_sim_time_sec": 28.25,
+      "time_to_50_pct": {
+        "step": 816,
+        "time_sec": 8.16
+      },
+      "time_to_80_pct": {
+        "step": 1520,
+        "time_sec": 15.2
+      },
+      "time_to_90_pct": {
+        "step": 1800,
+        "time_sec": 18.0
+      },
+      "time_to_95_pct": {
+        "step": 2008,
+        "time_sec": 20.08
+      },
+      "time_to_99_pct": {
+        "step": 2680,
+        "time_sec": 26.8
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_007_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.8,
+      "total_steps_run": 2825,
+      "total_sim_time_sec": 28.25,
+      "time_to_50_pct": {
+        "step": 816,
+        "time_sec": 8.16
+      },
+      "time_to_80_pct": {
+        "step": 1520,
+        "time_sec": 15.2
+      },
+      "time_to_90_pct": {
+        "step": 1800,
+        "time_sec": 18.0
+      },
+      "time_to_95_pct": {
+        "step": 2008,
+        "time_sec": 20.08
+      },
+      "time_to_99_pct": {
+        "step": 2680,
+        "time_sec": 26.8
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_007_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.8,
+      "total_steps_run": 3241,
+      "total_sim_time_sec": 32.41,
+      "time_to_50_pct": {
+        "step": 560,
+        "time_sec": 5.6
+      },
+      "time_to_80_pct": {
+        "step": 1496,
+        "time_sec": 14.96
+      },
+      "time_to_90_pct": {
+        "step": 1932,
+        "time_sec": 19.32
+      },
+      "time_to_95_pct": {
+        "step": 2268,
+        "time_sec": 22.68
+      },
+      "time_to_99_pct": {
+        "step": 2824,
+        "time_sec": 28.24
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_007_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 97.13,
+      "total_steps_run": 2618,
+      "total_sim_time_sec": 26.18,
+      "time_to_50_pct": {
+        "step": 560,
+        "time_sec": 5.6
+      },
+      "time_to_80_pct": {
+        "step": 1496,
+        "time_sec": 14.96
+      },
+      "time_to_90_pct": {
+        "step": 1932,
+        "time_sec": 19.32
+      },
+      "time_to_95_pct": {
+        "step": 2268,
+        "time_sec": 22.68
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.11,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_007_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 95.87,
+      "total_steps_run": 2591,
+      "total_sim_time_sec": 25.91,
+      "time_to_50_pct": {
+        "step": 536,
+        "time_sec": 5.36
+      },
+      "time_to_80_pct": {
+        "step": 1076,
+        "time_sec": 10.76
+      },
+      "time_to_90_pct": {
+        "step": 1564,
+        "time_sec": 15.64
+      },
+      "time_to_95_pct": {
+        "step": 2248,
+        "time_sec": 22.48
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.06,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_007_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 98.2,
+      "total_steps_run": 2568,
+      "total_sim_time_sec": 25.68,
+      "time_to_50_pct": {
+        "step": 816,
+        "time_sec": 8.16
+      },
+      "time_to_80_pct": {
+        "step": 1520,
+        "time_sec": 15.2
+      },
+      "time_to_90_pct": {
+        "step": 1800,
+        "time_sec": 18.0
+      },
+      "time_to_95_pct": {
+        "step": 2008,
+        "time_sec": 20.08
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.06,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_007_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.27,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 816,
+        "time_sec": 8.16
+      },
+      "time_to_80_pct": {
+        "step": 1520,
+        "time_sec": 15.2
+      },
+      "time_to_90_pct": {
+        "step": 1800,
+        "time_sec": 18.0
+      },
+      "time_to_95_pct": {
+        "step": 2856,
+        "time_sec": 28.56
+      },
+      "time_to_99_pct": {
+        "step": 3460,
+        "time_sec": 34.6
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 517.5,
+      "avg_final_battery_pct": 57.74,
+      "min_final_battery_pct": 42.37,
+      "total_charging_dockings": 17,
+      "total_charging_time_sec": 10.09,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_007_square",
+    "shape": "square",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 89.6,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 560,
+        "time_sec": 5.6
+      },
+      "time_to_80_pct": {
+        "step": 1496,
+        "time_sec": 14.96
+      },
+      "time_to_90_pct": null,
+      "time_to_95_pct": null,
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 432.45,
+      "avg_final_battery_pct": 13.47,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 2,
+      "total_charging_time_sec": 2.48,
+      "battery_depletion_failures": 3,
+      "surviving_drones": "1/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_008_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 3,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 1757,
+      "total_sim_time_sec": 17.57,
+      "time_to_50_pct": {
+        "step": 424,
+        "time_sec": 4.24
+      },
+      "time_to_80_pct": {
+        "step": 812,
+        "time_sec": 8.12
+      },
+      "time_to_90_pct": {
+        "step": 992,
+        "time_sec": 9.92
+      },
+      "time_to_95_pct": {
+        "step": 1276,
+        "time_sec": 12.76
+      },
+      "time_to_99_pct": {
+        "step": 1700,
+        "time_sec": 17.0
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_008_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 3,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.32,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 352,
+        "time_sec": 3.52
+      },
+      "time_to_80_pct": {
+        "step": 920,
+        "time_sec": 9.2
+      },
+      "time_to_90_pct": {
+        "step": 1352,
+        "time_sec": 13.52
+      },
+      "time_to_95_pct": {
+        "step": 1804,
+        "time_sec": 18.04
+      },
+      "time_to_99_pct": {
+        "step": 3212,
+        "time_sec": 32.12
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_008_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 3,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 2229,
+      "total_sim_time_sec": 22.29,
+      "time_to_50_pct": {
+        "step": 468,
+        "time_sec": 4.68
+      },
+      "time_to_80_pct": {
+        "step": 968,
+        "time_sec": 9.68
+      },
+      "time_to_90_pct": {
+        "step": 1160,
+        "time_sec": 11.6
+      },
+      "time_to_95_pct": {
+        "step": 1260,
+        "time_sec": 12.6
+      },
+      "time_to_99_pct": {
+        "step": 1744,
+        "time_sec": 17.44
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_008_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 3,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 2229,
+      "total_sim_time_sec": 22.29,
+      "time_to_50_pct": {
+        "step": 468,
+        "time_sec": 4.68
+      },
+      "time_to_80_pct": {
+        "step": 968,
+        "time_sec": 9.68
+      },
+      "time_to_90_pct": {
+        "step": 1160,
+        "time_sec": 11.6
+      },
+      "time_to_95_pct": {
+        "step": 1260,
+        "time_sec": 12.6
+      },
+      "time_to_99_pct": {
+        "step": 1744,
+        "time_sec": 17.44
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_008_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 3,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 1757,
+      "total_sim_time_sec": 17.57,
+      "time_to_50_pct": {
+        "step": 424,
+        "time_sec": 4.24
+      },
+      "time_to_80_pct": {
+        "step": 812,
+        "time_sec": 8.12
+      },
+      "time_to_90_pct": {
+        "step": 992,
+        "time_sec": 9.92
+      },
+      "time_to_95_pct": {
+        "step": 1276,
+        "time_sec": 12.76
+      },
+      "time_to_99_pct": {
+        "step": 1700,
+        "time_sec": 17.0
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_008_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 3,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 1757,
+      "total_sim_time_sec": 17.57,
+      "time_to_50_pct": {
+        "step": 424,
+        "time_sec": 4.24
+      },
+      "time_to_80_pct": {
+        "step": 812,
+        "time_sec": 8.12
+      },
+      "time_to_90_pct": {
+        "step": 992,
+        "time_sec": 9.92
+      },
+      "time_to_95_pct": {
+        "step": 1276,
+        "time_sec": 12.76
+      },
+      "time_to_99_pct": {
+        "step": 1700,
+        "time_sec": 17.0
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 285.66,
+      "avg_final_battery_pct": 28.59,
+      "min_final_battery_pct": 28.18,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_008_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 3,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 97.71,
+      "total_steps_run": 2548,
+      "total_sim_time_sec": 25.48,
+      "time_to_50_pct": {
+        "step": 352,
+        "time_sec": 3.52
+      },
+      "time_to_80_pct": {
+        "step": 920,
+        "time_sec": 9.2
+      },
+      "time_to_90_pct": {
+        "step": 1352,
+        "time_sec": 13.52
+      },
+      "time_to_95_pct": {
+        "step": 1804,
+        "time_sec": 18.04
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.13,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_008_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 3,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 2229,
+      "total_sim_time_sec": 22.29,
+      "time_to_50_pct": {
+        "step": 468,
+        "time_sec": 4.68
+      },
+      "time_to_80_pct": {
+        "step": 968,
+        "time_sec": 9.68
+      },
+      "time_to_90_pct": {
+        "step": 1160,
+        "time_sec": 11.6
+      },
+      "time_to_95_pct": {
+        "step": 1260,
+        "time_sec": 12.6
+      },
+      "time_to_99_pct": {
+        "step": 1744,
+        "time_sec": 17.44
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 361.76,
+      "avg_final_battery_pct": 9.56,
+      "min_final_battery_pct": 9.32,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_008_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 3,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 2769,
+      "total_sim_time_sec": 27.69,
+      "time_to_50_pct": {
+        "step": 468,
+        "time_sec": 4.68
+      },
+      "time_to_80_pct": {
+        "step": 968,
+        "time_sec": 9.68
+      },
+      "time_to_90_pct": {
+        "step": 1160,
+        "time_sec": 11.6
+      },
+      "time_to_95_pct": {
+        "step": 1260,
+        "time_sec": 12.6
+      },
+      "time_to_99_pct": {
+        "step": 2680,
+        "time_sec": 26.8
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 399.54,
+      "avg_final_battery_pct": 71.38,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 20,
+      "total_charging_time_sec": 8.31,
+      "battery_depletion_failures": 1,
+      "surviving_drones": "3/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_008_circle",
+    "shape": "circle",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 3,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 1761,
+      "total_sim_time_sec": 17.61,
+      "time_to_50_pct": {
+        "step": 424,
+        "time_sec": 4.24
+      },
+      "time_to_80_pct": {
+        "step": 812,
+        "time_sec": 8.12
+      },
+      "time_to_90_pct": {
+        "step": 992,
+        "time_sec": 9.92
+      },
+      "time_to_95_pct": {
+        "step": 1276,
+        "time_sec": 12.76
+      },
+      "time_to_99_pct": {
+        "step": 1700,
+        "time_sec": 17.0
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 286.26,
+      "avg_final_battery_pct": 28.44,
+      "min_final_battery_pct": 28.08,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_009_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 989,
+      "total_sim_time_sec": 9.89,
+      "time_to_50_pct": {
+        "step": 168,
+        "time_sec": 1.68
+      },
+      "time_to_80_pct": {
+        "step": 416,
+        "time_sec": 4.16
+      },
+      "time_to_90_pct": {
+        "step": 608,
+        "time_sec": 6.08
+      },
+      "time_to_95_pct": {
+        "step": 772,
+        "time_sec": 7.72
+      },
+      "time_to_99_pct": {
+        "step": 848,
+        "time_sec": 8.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_009_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.16,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 144,
+        "time_sec": 1.44
+      },
+      "time_to_80_pct": {
+        "step": 404,
+        "time_sec": 4.04
+      },
+      "time_to_90_pct": {
+        "step": 616,
+        "time_sec": 6.16
+      },
+      "time_to_95_pct": {
+        "step": 836,
+        "time_sec": 8.36
+      },
+      "time_to_99_pct": {
+        "step": 1248,
+        "time_sec": 12.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_009_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1065,
+      "total_sim_time_sec": 10.65,
+      "time_to_50_pct": {
+        "step": 220,
+        "time_sec": 2.2
+      },
+      "time_to_80_pct": {
+        "step": 544,
+        "time_sec": 5.44
+      },
+      "time_to_90_pct": {
+        "step": 712,
+        "time_sec": 7.12
+      },
+      "time_to_95_pct": {
+        "step": 860,
+        "time_sec": 8.6
+      },
+      "time_to_99_pct": {
+        "step": 992,
+        "time_sec": 9.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_009_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1065,
+      "total_sim_time_sec": 10.65,
+      "time_to_50_pct": {
+        "step": 220,
+        "time_sec": 2.2
+      },
+      "time_to_80_pct": {
+        "step": 544,
+        "time_sec": 5.44
+      },
+      "time_to_90_pct": {
+        "step": 712,
+        "time_sec": 7.12
+      },
+      "time_to_95_pct": {
+        "step": 860,
+        "time_sec": 8.6
+      },
+      "time_to_99_pct": {
+        "step": 992,
+        "time_sec": 9.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_009_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 989,
+      "total_sim_time_sec": 9.89,
+      "time_to_50_pct": {
+        "step": 168,
+        "time_sec": 1.68
+      },
+      "time_to_80_pct": {
+        "step": 416,
+        "time_sec": 4.16
+      },
+      "time_to_90_pct": {
+        "step": 608,
+        "time_sec": 6.08
+      },
+      "time_to_95_pct": {
+        "step": 772,
+        "time_sec": 7.72
+      },
+      "time_to_99_pct": {
+        "step": 848,
+        "time_sec": 8.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_009_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 989,
+      "total_sim_time_sec": 9.89,
+      "time_to_50_pct": {
+        "step": 168,
+        "time_sec": 1.68
+      },
+      "time_to_80_pct": {
+        "step": 416,
+        "time_sec": 4.16
+      },
+      "time_to_90_pct": {
+        "step": 608,
+        "time_sec": 6.08
+      },
+      "time_to_95_pct": {
+        "step": 772,
+        "time_sec": 7.72
+      },
+      "time_to_99_pct": {
+        "step": 848,
+        "time_sec": 8.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 160.34,
+      "avg_final_battery_pct": 59.92,
+      "min_final_battery_pct": 59.76,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_009_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.16,
+      "total_steps_run": 2684,
+      "total_sim_time_sec": 26.84,
+      "time_to_50_pct": {
+        "step": 144,
+        "time_sec": 1.44
+      },
+      "time_to_80_pct": {
+        "step": 404,
+        "time_sec": 4.04
+      },
+      "time_to_90_pct": {
+        "step": 616,
+        "time_sec": 6.16
+      },
+      "time_to_95_pct": {
+        "step": 836,
+        "time_sec": 8.36
+      },
+      "time_to_99_pct": {
+        "step": 1248,
+        "time_sec": 12.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.08,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_009_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1065,
+      "total_sim_time_sec": 10.65,
+      "time_to_50_pct": {
+        "step": 220,
+        "time_sec": 2.2
+      },
+      "time_to_80_pct": {
+        "step": 544,
+        "time_sec": 5.44
+      },
+      "time_to_90_pct": {
+        "step": 712,
+        "time_sec": 7.12
+      },
+      "time_to_95_pct": {
+        "step": 860,
+        "time_sec": 8.6
+      },
+      "time_to_99_pct": {
+        "step": 992,
+        "time_sec": 9.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 172.5,
+      "avg_final_battery_pct": 56.87,
+      "min_final_battery_pct": 56.65,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_009_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 1065,
+      "total_sim_time_sec": 10.65,
+      "time_to_50_pct": {
+        "step": 220,
+        "time_sec": 2.2
+      },
+      "time_to_80_pct": {
+        "step": 544,
+        "time_sec": 5.44
+      },
+      "time_to_90_pct": {
+        "step": 712,
+        "time_sec": 7.12
+      },
+      "time_to_95_pct": {
+        "step": 860,
+        "time_sec": 8.6
+      },
+      "time_to_99_pct": {
+        "step": 992,
+        "time_sec": 9.92
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 172.5,
+      "avg_final_battery_pct": 56.87,
+      "min_final_battery_pct": 56.65,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_009_ellipse",
+    "shape": "ellipse",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 2,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.86,
+      "total_steps_run": 989,
+      "total_sim_time_sec": 9.89,
+      "time_to_50_pct": {
+        "step": 168,
+        "time_sec": 1.68
+      },
+      "time_to_80_pct": {
+        "step": 416,
+        "time_sec": 4.16
+      },
+      "time_to_90_pct": {
+        "step": 608,
+        "time_sec": 6.08
+      },
+      "time_to_95_pct": {
+        "step": 772,
+        "time_sec": 7.72
+      },
+      "time_to_99_pct": {
+        "step": 848,
+        "time_sec": 8.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 160.34,
+      "avg_final_battery_pct": 59.92,
+      "min_final_battery_pct": 59.76,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_010_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 2157,
+      "total_sim_time_sec": 21.57,
+      "time_to_50_pct": {
+        "step": 340,
+        "time_sec": 3.4
+      },
+      "time_to_80_pct": {
+        "step": 788,
+        "time_sec": 7.88
+      },
+      "time_to_90_pct": {
+        "step": 1080,
+        "time_sec": 10.8
+      },
+      "time_to_95_pct": {
+        "step": 1388,
+        "time_sec": 13.88
+      },
+      "time_to_99_pct": {
+        "step": 2124,
+        "time_sec": 21.24
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_010_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 98.04,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 788,
+        "time_sec": 7.88
+      },
+      "time_to_90_pct": {
+        "step": 2548,
+        "time_sec": 25.48
+      },
+      "time_to_95_pct": {
+        "step": 3252,
+        "time_sec": 32.52
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_010_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 2121,
+      "total_sim_time_sec": 21.21,
+      "time_to_50_pct": {
+        "step": 576,
+        "time_sec": 5.76
+      },
+      "time_to_80_pct": {
+        "step": 1180,
+        "time_sec": 11.8
+      },
+      "time_to_90_pct": {
+        "step": 1524,
+        "time_sec": 15.24
+      },
+      "time_to_95_pct": {
+        "step": 1664,
+        "time_sec": 16.64
+      },
+      "time_to_99_pct": {
+        "step": 2052,
+        "time_sec": 20.52
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_010_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 2121,
+      "total_sim_time_sec": 21.21,
+      "time_to_50_pct": {
+        "step": 576,
+        "time_sec": 5.76
+      },
+      "time_to_80_pct": {
+        "step": 1180,
+        "time_sec": 11.8
+      },
+      "time_to_90_pct": {
+        "step": 1524,
+        "time_sec": 15.24
+      },
+      "time_to_95_pct": {
+        "step": 1664,
+        "time_sec": 16.64
+      },
+      "time_to_99_pct": {
+        "step": 2052,
+        "time_sec": 20.52
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_010_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 2157,
+      "total_sim_time_sec": 21.57,
+      "time_to_50_pct": {
+        "step": 340,
+        "time_sec": 3.4
+      },
+      "time_to_80_pct": {
+        "step": 788,
+        "time_sec": 7.88
+      },
+      "time_to_90_pct": {
+        "step": 1080,
+        "time_sec": 10.8
+      },
+      "time_to_95_pct": {
+        "step": 1388,
+        "time_sec": 13.88
+      },
+      "time_to_99_pct": {
+        "step": 2124,
+        "time_sec": 21.24
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_010_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.83,
+      "total_steps_run": 2157,
+      "total_sim_time_sec": 21.57,
+      "time_to_50_pct": {
+        "step": 340,
+        "time_sec": 3.4
+      },
+      "time_to_80_pct": {
+        "step": 788,
+        "time_sec": 7.88
+      },
+      "time_to_90_pct": {
+        "step": 1080,
+        "time_sec": 10.8
+      },
+      "time_to_95_pct": {
+        "step": 1388,
+        "time_sec": 13.88
+      },
+      "time_to_99_pct": {
+        "step": 2124,
+        "time_sec": 21.24
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 344.21,
+      "avg_final_battery_pct": 13.95,
+      "min_final_battery_pct": 11.66,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_010_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 90.27,
+      "total_steps_run": 2670,
+      "total_sim_time_sec": 26.7,
+      "time_to_50_pct": {
+        "step": 408,
+        "time_sec": 4.08
+      },
+      "time_to_80_pct": {
+        "step": 788,
+        "time_sec": 7.88
+      },
+      "time_to_90_pct": {
+        "step": 2548,
+        "time_sec": 25.48
+      },
+      "time_to_95_pct": null,
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.1,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_010_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 2121,
+      "total_sim_time_sec": 21.21,
+      "time_to_50_pct": {
+        "step": 576,
+        "time_sec": 5.76
+      },
+      "time_to_80_pct": {
+        "step": 1180,
+        "time_sec": 11.8
+      },
+      "time_to_90_pct": {
+        "step": 1524,
+        "time_sec": 15.24
+      },
+      "time_to_95_pct": {
+        "step": 1664,
+        "time_sec": 16.64
+      },
+      "time_to_99_pct": {
+        "step": 2052,
+        "time_sec": 20.52
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 341.33,
+      "avg_final_battery_pct": 14.67,
+      "min_final_battery_pct": 14.3,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_010_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 3497,
+      "total_sim_time_sec": 34.97,
+      "time_to_50_pct": {
+        "step": 576,
+        "time_sec": 5.76
+      },
+      "time_to_80_pct": {
+        "step": 1180,
+        "time_sec": 11.8
+      },
+      "time_to_90_pct": {
+        "step": 1524,
+        "time_sec": 15.24
+      },
+      "time_to_95_pct": {
+        "step": 1664,
+        "time_sec": 16.64
+      },
+      "time_to_99_pct": {
+        "step": 3428,
+        "time_sec": 34.28
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 485.92,
+      "avg_final_battery_pct": 47.69,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 24,
+      "total_charging_time_sec": 8.09,
+      "battery_depletion_failures": 1,
+      "surviving_drones": "3/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_010_u_shape",
+    "shape": "u_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.91,
+      "total_steps_run": 2981,
+      "total_sim_time_sec": 29.81,
+      "time_to_50_pct": {
+        "step": 340,
+        "time_sec": 3.4
+      },
+      "time_to_80_pct": {
+        "step": 788,
+        "time_sec": 7.88
+      },
+      "time_to_90_pct": {
+        "step": 1080,
+        "time_sec": 10.8
+      },
+      "time_to_95_pct": {
+        "step": 1388,
+        "time_sec": 13.88
+      },
+      "time_to_99_pct": {
+        "step": 2936,
+        "time_sec": 29.36
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 425.06,
+      "avg_final_battery_pct": 61.41,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 20,
+      "total_charging_time_sec": 7.89,
+      "battery_depletion_failures": 1,
+      "surviving_drones": "3/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_011_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1793,
+      "total_sim_time_sec": 17.93,
+      "time_to_50_pct": {
+        "step": 364,
+        "time_sec": 3.64
+      },
+      "time_to_80_pct": {
+        "step": 708,
+        "time_sec": 7.08
+      },
+      "time_to_90_pct": {
+        "step": 1100,
+        "time_sec": 11.0
+      },
+      "time_to_95_pct": {
+        "step": 1272,
+        "time_sec": 12.72
+      },
+      "time_to_99_pct": {
+        "step": 1664,
+        "time_sec": 16.64
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_011_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.79,
+      "total_steps_run": 3500,
+      "total_sim_time_sec": 35.0,
+      "time_to_50_pct": {
+        "step": 304,
+        "time_sec": 3.04
+      },
+      "time_to_80_pct": {
+        "step": 752,
+        "time_sec": 7.52
+      },
+      "time_to_90_pct": {
+        "step": 1124,
+        "time_sec": 11.24
+      },
+      "time_to_95_pct": {
+        "step": 1728,
+        "time_sec": 17.28
+      },
+      "time_to_99_pct": {
+        "step": 2796,
+        "time_sec": 27.96
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_011_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1729,
+      "total_sim_time_sec": 17.29,
+      "time_to_50_pct": {
+        "step": 480,
+        "time_sec": 4.8
+      },
+      "time_to_80_pct": {
+        "step": 984,
+        "time_sec": 9.84
+      },
+      "time_to_90_pct": {
+        "step": 1156,
+        "time_sec": 11.56
+      },
+      "time_to_95_pct": {
+        "step": 1312,
+        "time_sec": 13.12
+      },
+      "time_to_99_pct": {
+        "step": 1532,
+        "time_sec": 15.32
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_011_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1729,
+      "total_sim_time_sec": 17.29,
+      "time_to_50_pct": {
+        "step": 480,
+        "time_sec": 4.8
+      },
+      "time_to_80_pct": {
+        "step": 984,
+        "time_sec": 9.84
+      },
+      "time_to_90_pct": {
+        "step": 1156,
+        "time_sec": 11.56
+      },
+      "time_to_95_pct": {
+        "step": 1312,
+        "time_sec": 13.12
+      },
+      "time_to_99_pct": {
+        "step": 1532,
+        "time_sec": 15.32
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_011_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1793,
+      "total_sim_time_sec": 17.93,
+      "time_to_50_pct": {
+        "step": 364,
+        "time_sec": 3.64
+      },
+      "time_to_80_pct": {
+        "step": 708,
+        "time_sec": 7.08
+      },
+      "time_to_90_pct": {
+        "step": 1100,
+        "time_sec": 11.0
+      },
+      "time_to_95_pct": {
+        "step": 1272,
+        "time_sec": 12.72
+      },
+      "time_to_99_pct": {
+        "step": 1664,
+        "time_sec": 16.64
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_011_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1793,
+      "total_sim_time_sec": 17.93,
+      "time_to_50_pct": {
+        "step": 364,
+        "time_sec": 3.64
+      },
+      "time_to_80_pct": {
+        "step": 708,
+        "time_sec": 7.08
+      },
+      "time_to_90_pct": {
+        "step": 1100,
+        "time_sec": 11.0
+      },
+      "time_to_95_pct": {
+        "step": 1272,
+        "time_sec": 12.72
+      },
+      "time_to_99_pct": {
+        "step": 1664,
+        "time_sec": 16.64
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 285.74,
+      "avg_final_battery_pct": 28.57,
+      "min_final_battery_pct": 27.7,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_011_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 98.97,
+      "total_steps_run": 2611,
+      "total_sim_time_sec": 26.11,
+      "time_to_50_pct": {
+        "step": 304,
+        "time_sec": 3.04
+      },
+      "time_to_80_pct": {
+        "step": 752,
+        "time_sec": 7.52
+      },
+      "time_to_90_pct": {
+        "step": 1124,
+        "time_sec": 11.24
+      },
+      "time_to_95_pct": {
+        "step": 1728,
+        "time_sec": 17.28
+      },
+      "time_to_99_pct": null
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.07,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_011_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1729,
+      "total_sim_time_sec": 17.29,
+      "time_to_50_pct": {
+        "step": 480,
+        "time_sec": 4.8
+      },
+      "time_to_80_pct": {
+        "step": 984,
+        "time_sec": 9.84
+      },
+      "time_to_90_pct": {
+        "step": 1156,
+        "time_sec": 11.56
+      },
+      "time_to_95_pct": {
+        "step": 1312,
+        "time_sec": 13.12
+      },
+      "time_to_99_pct": {
+        "step": 1532,
+        "time_sec": 15.32
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 277.86,
+      "avg_final_battery_pct": 30.53,
+      "min_final_battery_pct": 29.9,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_011_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1729,
+      "total_sim_time_sec": 17.29,
+      "time_to_50_pct": {
+        "step": 480,
+        "time_sec": 4.8
+      },
+      "time_to_80_pct": {
+        "step": 984,
+        "time_sec": 9.84
+      },
+      "time_to_90_pct": {
+        "step": 1156,
+        "time_sec": 11.56
+      },
+      "time_to_95_pct": {
+        "step": 1312,
+        "time_sec": 13.12
+      },
+      "time_to_99_pct": {
+        "step": 1532,
+        "time_sec": 15.32
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 277.86,
+      "avg_final_battery_pct": 30.53,
+      "min_final_battery_pct": 29.9,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_011_l_shape",
+    "shape": "l_shape",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 6,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.9,
+      "total_steps_run": 1809,
+      "total_sim_time_sec": 18.09,
+      "time_to_50_pct": {
+        "step": 364,
+        "time_sec": 3.64
+      },
+      "time_to_80_pct": {
+        "step": 708,
+        "time_sec": 7.08
+      },
+      "time_to_90_pct": {
+        "step": 1100,
+        "time_sec": 11.0
+      },
+      "time_to_95_pct": {
+        "step": 1272,
+        "time_sec": 12.72
+      },
+      "time_to_99_pct": {
+        "step": 1664,
+        "time_sec": 16.64
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 288.46,
+      "avg_final_battery_pct": 27.89,
+      "min_final_battery_pct": 26.92,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_012_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 1925,
+      "total_sim_time_sec": 19.25,
+      "time_to_50_pct": {
+        "step": 320,
+        "time_sec": 3.2
+      },
+      "time_to_80_pct": {
+        "step": 924,
+        "time_sec": 9.24
+      },
+      "time_to_90_pct": {
+        "step": 1528,
+        "time_sec": 15.28
+      },
+      "time_to_95_pct": {
+        "step": 1640,
+        "time_sec": 16.4
+      },
+      "time_to_99_pct": {
+        "step": 1768,
+        "time_sec": 17.68
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_012_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 2257,
+      "total_sim_time_sec": 22.57,
+      "time_to_50_pct": {
+        "step": 312,
+        "time_sec": 3.12
+      },
+      "time_to_80_pct": {
+        "step": 804,
+        "time_sec": 8.04
+      },
+      "time_to_90_pct": {
+        "step": 1116,
+        "time_sec": 11.16
+      },
+      "time_to_95_pct": {
+        "step": 1356,
+        "time_sec": 13.56
+      },
+      "time_to_99_pct": {
+        "step": 1848,
+        "time_sec": 18.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_012_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 2497,
+      "total_sim_time_sec": 24.97,
+      "time_to_50_pct": {
+        "step": 380,
+        "time_sec": 3.8
+      },
+      "time_to_80_pct": {
+        "step": 1020,
+        "time_sec": 10.2
+      },
+      "time_to_90_pct": {
+        "step": 1200,
+        "time_sec": 12.0
+      },
+      "time_to_95_pct": {
+        "step": 1320,
+        "time_sec": 13.2
+      },
+      "time_to_99_pct": {
+        "step": 1532,
+        "time_sec": 15.32
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_012_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 2497,
+      "total_sim_time_sec": 24.97,
+      "time_to_50_pct": {
+        "step": 380,
+        "time_sec": 3.8
+      },
+      "time_to_80_pct": {
+        "step": 1020,
+        "time_sec": 10.2
+      },
+      "time_to_90_pct": {
+        "step": 1200,
+        "time_sec": 12.0
+      },
+      "time_to_95_pct": {
+        "step": 1320,
+        "time_sec": 13.2
+      },
+      "time_to_99_pct": {
+        "step": 1532,
+        "time_sec": 15.32
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_012_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 1925,
+      "total_sim_time_sec": 19.25,
+      "time_to_50_pct": {
+        "step": 320,
+        "time_sec": 3.2
+      },
+      "time_to_80_pct": {
+        "step": 924,
+        "time_sec": 9.24
+      },
+      "time_to_90_pct": {
+        "step": 1528,
+        "time_sec": 15.28
+      },
+      "time_to_95_pct": {
+        "step": 1640,
+        "time_sec": 16.4
+      },
+      "time_to_99_pct": {
+        "step": 1768,
+        "time_sec": 17.68
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_012_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 1925,
+      "total_sim_time_sec": 19.25,
+      "time_to_50_pct": {
+        "step": 320,
+        "time_sec": 3.2
+      },
+      "time_to_80_pct": {
+        "step": 924,
+        "time_sec": 9.24
+      },
+      "time_to_90_pct": {
+        "step": 1528,
+        "time_sec": 15.28
+      },
+      "time_to_95_pct": {
+        "step": 1640,
+        "time_sec": 16.4
+      },
+      "time_to_99_pct": {
+        "step": 1768,
+        "time_sec": 17.68
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 306.15,
+      "avg_final_battery_pct": 23.46,
+      "min_final_battery_pct": 22.17,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_012_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 2257,
+      "total_sim_time_sec": 22.57,
+      "time_to_50_pct": {
+        "step": 312,
+        "time_sec": 3.12
+      },
+      "time_to_80_pct": {
+        "step": 804,
+        "time_sec": 8.04
+      },
+      "time_to_90_pct": {
+        "step": 1116,
+        "time_sec": 11.16
+      },
+      "time_to_95_pct": {
+        "step": 1356,
+        "time_sec": 13.56
+      },
+      "time_to_99_pct": {
+        "step": 1848,
+        "time_sec": 18.48
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 363.84,
+      "avg_final_battery_pct": 9.04,
+      "min_final_battery_pct": 8.31,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_012_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.68,
+      "total_steps_run": 2492,
+      "total_sim_time_sec": 24.92,
+      "time_to_50_pct": {
+        "step": 380,
+        "time_sec": 3.8
+      },
+      "time_to_80_pct": {
+        "step": 1020,
+        "time_sec": 10.2
+      },
+      "time_to_90_pct": {
+        "step": 1200,
+        "time_sec": 12.0
+      },
+      "time_to_95_pct": {
+        "step": 1320,
+        "time_sec": 13.2
+      },
+      "time_to_99_pct": {
+        "step": 1532,
+        "time_sec": 15.32
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 400.11,
+      "avg_final_battery_pct": 0.0,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 4,
+      "surviving_drones": "0/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_012_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 3093,
+      "total_sim_time_sec": 30.93,
+      "time_to_50_pct": {
+        "step": 380,
+        "time_sec": 3.8
+      },
+      "time_to_80_pct": {
+        "step": 1020,
+        "time_sec": 10.2
+      },
+      "time_to_90_pct": {
+        "step": 1200,
+        "time_sec": 12.0
+      },
+      "time_to_95_pct": {
+        "step": 1320,
+        "time_sec": 13.2
+      },
+      "time_to_99_pct": {
+        "step": 1532,
+        "time_sec": 15.32
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 443.57,
+      "avg_final_battery_pct": 59.72,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 18,
+      "total_charging_time_sec": 8.21,
+      "battery_depletion_failures": 1,
+      "surviving_drones": "3/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_012_ring",
+    "shape": "ring",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 5,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.89,
+      "total_steps_run": 3265,
+      "total_sim_time_sec": 32.65,
+      "time_to_50_pct": {
+        "step": 320,
+        "time_sec": 3.2
+      },
+      "time_to_80_pct": {
+        "step": 924,
+        "time_sec": 9.24
+      },
+      "time_to_90_pct": {
+        "step": 1528,
+        "time_sec": 15.28
+      },
+      "time_to_95_pct": {
+        "step": 1640,
+        "time_sec": 16.4
+      },
+      "time_to_99_pct": {
+        "step": 1800,
+        "time_sec": 18.0
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 455.64,
+      "avg_final_battery_pct": 54.81,
+      "min_final_battery_pct": 0.0,
+      "total_charging_dockings": 20,
+      "total_charging_time_sec": 8.01,
+      "battery_depletion_failures": 1,
+      "surviving_drones": "3/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_013_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1593,
+      "total_sim_time_sec": 15.93,
+      "time_to_50_pct": {
+        "step": 276,
+        "time_sec": 2.76
+      },
+      "time_to_80_pct": {
+        "step": 608,
+        "time_sec": 6.08
+      },
+      "time_to_90_pct": {
+        "step": 800,
+        "time_sec": 8.0
+      },
+      "time_to_95_pct": {
+        "step": 928,
+        "time_sec": 9.28
+      },
+      "time_to_99_pct": {
+        "step": 1560,
+        "time_sec": 15.6
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_013_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.88,
+      "total_steps_run": 1709,
+      "total_sim_time_sec": 17.09,
+      "time_to_50_pct": {
+        "step": 240,
+        "time_sec": 2.4
+      },
+      "time_to_80_pct": {
+        "step": 520,
+        "time_sec": 5.2
+      },
+      "time_to_90_pct": {
+        "step": 804,
+        "time_sec": 8.04
+      },
+      "time_to_95_pct": {
+        "step": 1024,
+        "time_sec": 10.24
+      },
+      "time_to_99_pct": {
+        "step": 1332,
+        "time_sec": 13.32
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_013_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.88,
+      "total_steps_run": 1245,
+      "total_sim_time_sec": 12.45,
+      "time_to_50_pct": {
+        "step": 400,
+        "time_sec": 4.0
+      },
+      "time_to_80_pct": {
+        "step": 748,
+        "time_sec": 7.48
+      },
+      "time_to_90_pct": {
+        "step": 904,
+        "time_sec": 9.04
+      },
+      "time_to_95_pct": {
+        "step": 1024,
+        "time_sec": 10.24
+      },
+      "time_to_99_pct": {
+        "step": 1112,
+        "time_sec": 11.12
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_013_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.88,
+      "total_steps_run": 1245,
+      "total_sim_time_sec": 12.45,
+      "time_to_50_pct": {
+        "step": 400,
+        "time_sec": 4.0
+      },
+      "time_to_80_pct": {
+        "step": 748,
+        "time_sec": 7.48
+      },
+      "time_to_90_pct": {
+        "step": 904,
+        "time_sec": 9.04
+      },
+      "time_to_95_pct": {
+        "step": 1024,
+        "time_sec": 10.24
+      },
+      "time_to_99_pct": {
+        "step": 1112,
+        "time_sec": 11.12
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_013_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "no_battery",
+    "battery_enabled": false,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 0,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1593,
+      "total_sim_time_sec": 15.93,
+      "time_to_50_pct": {
+        "step": 276,
+        "time_sec": 2.76
+      },
+      "time_to_80_pct": {
+        "step": 608,
+        "time_sec": 6.08
+      },
+      "time_to_90_pct": {
+        "step": 800,
+        "time_sec": 8.0
+      },
+      "time_to_95_pct": {
+        "step": 928,
+        "time_sec": 9.28
+      },
+      "time_to_99_pct": {
+        "step": 1560,
+        "time_sec": 15.6
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 0.0,
+      "avg_final_battery_pct": 100.0,
+      "min_final_battery_pct": 100.0,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "voronoi",
+    "map_name": "map_013_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1593,
+      "total_sim_time_sec": 15.93,
+      "time_to_50_pct": {
+        "step": 276,
+        "time_sec": 2.76
+      },
+      "time_to_80_pct": {
+        "step": 608,
+        "time_sec": 6.08
+      },
+      "time_to_90_pct": {
+        "step": 800,
+        "time_sec": 8.0
+      },
+      "time_to_95_pct": {
+        "step": 928,
+        "time_sec": 9.28
+      },
+      "time_to_99_pct": {
+        "step": 1560,
+        "time_sec": 15.6
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 254.81,
+      "avg_final_battery_pct": 36.3,
+      "min_final_battery_pct": 35.21,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "frontier",
+    "map_name": "map_013_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.88,
+      "total_steps_run": 1709,
+      "total_sim_time_sec": 17.09,
+      "time_to_50_pct": {
+        "step": 240,
+        "time_sec": 2.4
+      },
+      "time_to_80_pct": {
+        "step": 520,
+        "time_sec": 5.2
+      },
+      "time_to_90_pct": {
+        "step": 804,
+        "time_sec": 8.04
+      },
+      "time_to_95_pct": {
+        "step": 1024,
+        "time_sec": 10.24
+      },
+      "time_to_99_pct": {
+        "step": 1332,
+        "time_sec": 13.32
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 274.65,
+      "avg_final_battery_pct": 31.34,
+      "min_final_battery_pct": 29.98,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "patrol",
+    "map_name": "map_013_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.88,
+      "total_steps_run": 1245,
+      "total_sim_time_sec": 12.45,
+      "time_to_50_pct": {
+        "step": 400,
+        "time_sec": 4.0
+      },
+      "time_to_80_pct": {
+        "step": 748,
+        "time_sec": 7.48
+      },
+      "time_to_90_pct": {
+        "step": 904,
+        "time_sec": 9.04
+      },
+      "time_to_95_pct": {
+        "step": 1024,
+        "time_sec": 10.24
+      },
+      "time_to_99_pct": {
+        "step": 1112,
+        "time_sec": 11.12
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 200.48,
+      "avg_final_battery_pct": 49.88,
+      "min_final_battery_pct": 49.79,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_patrol",
+    "map_name": "map_013_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 99.88,
+      "total_steps_run": 1245,
+      "total_sim_time_sec": 12.45,
+      "time_to_50_pct": {
+        "step": 400,
+        "time_sec": 4.0
+      },
+      "time_to_80_pct": {
+        "step": 748,
+        "time_sec": 7.48
+      },
+      "time_to_90_pct": {
+        "step": 904,
+        "time_sec": 9.04
+      },
+      "time_to_95_pct": {
+        "step": 1024,
+        "time_sec": 10.24
+      },
+      "time_to_99_pct": {
+        "step": 1112,
+        "time_sec": 11.12
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 200.48,
+      "avg_final_battery_pct": 49.88,
+      "min_final_battery_pct": 49.79,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  },
+  {
+    "algorithm": "battery_voronoi",
+    "map_name": "map_013_cross",
+    "shape": "cross",
+    "wall_mode": "hard",
+    "scenario_mode": "with_battery",
+    "battery_enabled": true,
+    "num_drones": 4,
+    "grid_size_m": 20.0,
+    "grid_resolution": 40,
+    "num_obstacles": 4,
+    "num_charging_stations": 2,
+    "coverage_time_metrics": {
+      "final_coverage_pct": 100.0,
+      "total_steps_run": 1593,
+      "total_sim_time_sec": 15.93,
+      "time_to_50_pct": {
+        "step": 276,
+        "time_sec": 2.76
+      },
+      "time_to_80_pct": {
+        "step": 608,
+        "time_sec": 6.08
+      },
+      "time_to_90_pct": {
+        "step": 800,
+        "time_sec": 8.0
+      },
+      "time_to_95_pct": {
+        "step": 928,
+        "time_sec": 9.28
+      },
+      "time_to_99_pct": {
+        "step": 1560,
+        "time_sec": 15.6
+      }
+    },
+    "battery_management_metrics": {
+      "total_energy_drained_pct": 254.81,
+      "avg_final_battery_pct": 36.3,
+      "min_final_battery_pct": 35.21,
+      "total_charging_dockings": 0,
+      "total_charging_time_sec": 0.0,
+      "battery_depletion_failures": 0,
+      "surviving_drones": "4/4"
+    }
+  }
+]
